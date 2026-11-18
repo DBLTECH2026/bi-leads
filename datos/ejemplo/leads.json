@@ -1,0 +1,832 @@
+[
+ {
+  "_id": "L-ejemplo000",
+  "nombre": "Ana Torres",
+  "llegada": {
+   "$date": "2026-07-04T19:00:00Z"
+  },
+  "mes": "2026-07",
+  "dia": "sábado",
+  "diaNum": 6,
+  "hora": 14,
+  "origen": {
+   "tipo": "anuncio",
+   "plataforma": "facebook",
+   "anuncio": "Mobiliario para tu barbería",
+   "clickId": true
+  },
+  "capi": {
+   "periodo": "antes",
+   "leadEnviado": true
+  },
+  "etapa": "VENTA_GANADA",
+  "calificado": true,
+  "asesora": "Asesora A",
+  "compro": true,
+  "primeraCompra": {
+   "$date": "2026-07-11T19:00:00Z"
+  },
+  "diasHastaCompra": 7
+ },
+ {
+  "_id": "L-ejemplo001",
+  "nombre": "Bruno Díaz",
+  "llegada": {
+   "$date": "2026-08-26T23:00:00Z"
+  },
+  "mes": "2026-08",
+  "dia": "miércoles",
+  "diaNum": 3,
+  "hora": 18,
+  "origen": {
+   "tipo": "anuncio",
+   "plataforma": "instagram",
+   "anuncio": "Sillones con envío a todo el Perú",
+   "clickId": true
+  },
+  "capi": {
+   "periodo": "antes",
+   "leadEnviado": false
+  },
+  "etapa": "INTERESADO",
+  "calificado": false,
+  "asesora": "Asesora B",
+  "compro": false,
+  "primeraCompra": null,
+  "diasHastaCompra": null
+ },
+ {
+  "_id": "L-ejemplo002",
+  "nombre": "Carla Ríos",
+  "llegada": {
+   "$date": "2026-09-04T18:00:00Z"
+  },
+  "mes": "2026-09",
+  "dia": "viernes",
+  "diaNum": 5,
+  "hora": 13,
+  "origen": {
+   "tipo": "directo",
+   "plataforma": null,
+   "anuncio": null,
+   "clickId": false
+  },
+  "capi": {
+   "periodo": "despues",
+   "leadEnviado": false
+  },
+  "etapa": "LISTO_PARA_COMPRAR",
+  "calificado": false,
+  "asesora": "Asesora C",
+  "compro": false,
+  "primeraCompra": null,
+  "diasHastaCompra": null
+ },
+ {
+  "_id": "L-ejemplo003",
+  "nombre": "Diego Paz",
+  "llegada": {
+   "$date": "2026-10-11T17:00:00Z"
+  },
+  "mes": "2026-10",
+  "dia": "domingo",
+  "diaNum": 7,
+  "hora": 12,
+  "origen": {
+   "tipo": "anuncio",
+   "plataforma": "instagram",
+   "anuncio": "Lavacabezas para salón",
+   "clickId": true
+  },
+  "capi": {
+   "periodo": "despues",
+   "leadEnviado": true
+  },
+  "etapa": "VENTA_GANADA",
+  "calificado": true,
+  "asesora": "Asesora A",
+  "compro": true,
+  "primeraCompra": {
+   "$date": "2026-10-17T17:00:00Z"
+  },
+  "diasHastaCompra": 6
+ },
+ {
+  "_id": "L-ejemplo004",
+  "nombre": "Elena Soto",
+  "llegada": {
+   "$date": "2026-07-24T19:00:00Z"
+  },
+  "mes": "2026-07",
+  "dia": "viernes",
+  "diaNum": 5,
+  "hora": 14,
+  "origen": {
+   "tipo": "anuncio",
+   "plataforma": "instagram",
+   "anuncio": "Lavacabezas para salón",
+   "clickId": true
+  },
+  "capi": {
+   "periodo": "antes",
+   "leadEnviado": false
+  },
+  "etapa": "LISTO_PARA_COMPRAR",
+  "calificado": false,
+  "asesora": "Asesora B",
+  "compro": false,
+  "primeraCompra": null,
+  "diasHastaCompra": null
+ },
+ {
+  "_id": "L-ejemplo005",
+  "nombre": "Fabio Luna",
+  "llegada": {
+   "$date": "2026-08-19T18:00:00Z"
+  },
+  "mes": "2026-08",
+  "dia": "miércoles",
+  "diaNum": 3,
+  "hora": 13,
+  "origen": {
+   "tipo": "anuncio",
+   "plataforma": "instagram",
+   "anuncio": "Lavacabezas para salón",
+   "clickId": true
+  },
+  "capi": {
+   "periodo": "antes",
+   "leadEnviado": false
+  },
+  "etapa": "INTERESADO",
+  "calificado": false,
+  "asesora": "Asesora C",
+  "compro": false,
+  "primeraCompra": null,
+  "diasHastaCompra": null
+ },
+ {
+  "_id": "L-ejemplo006",
+  "nombre": "Gina Vega",
+  "llegada": {
+   "$date": "2026-09-19T22:00:00Z"
+  },
+  "mes": "2026-09",
+  "dia": "sábado",
+  "diaNum": 6,
+  "hora": 17,
+  "origen": {
+   "tipo": "anuncio",
+   "plataforma": "facebook",
+   "anuncio": "Lavacabezas para salón",
+   "clickId": true
+  },
+  "capi": {
+   "periodo": "despues",
+   "leadEnviado": true
+  },
+  "etapa": "VENTA_GANADA",
+  "calificado": true,
+  "asesora": "Asesora A",
+  "compro": true,
+  "primeraCompra": {
+   "$date": "2026-09-26T22:00:00Z"
+  },
+  "diasHastaCompra": 7
+ },
+ {
+  "_id": "L-ejemplo007",
+  "nombre": "Hugo Lara",
+  "llegada": {
+   "$date": "2026-10-13T22:00:00Z"
+  },
+  "mes": "2026-10",
+  "dia": "martes",
+  "diaNum": 2,
+  "hora": 17,
+  "origen": {
+   "tipo": "anuncio",
+   "plataforma": "instagram",
+   "anuncio": "Sillones con envío a todo el Perú",
+   "clickId": true
+  },
+  "capi": {
+   "periodo": "despues",
+   "leadEnviado": false
+  },
+  "etapa": "INACTIVO",
+  "calificado": false,
+  "asesora": "Asesora B",
+  "compro": false,
+  "primeraCompra": null,
+  "diasHastaCompra": null
+ },
+ {
+  "_id": "L-ejemplo008",
+  "nombre": "Irene Mora",
+  "llegada": {
+   "$date": "2026-07-26T14:00:00Z"
+  },
+  "mes": "2026-07",
+  "dia": "domingo",
+  "diaNum": 7,
+  "hora": 9,
+  "origen": {
+   "tipo": "anuncio",
+   "plataforma": "facebook",
+   "anuncio": "Mobiliario para tu barbería",
+   "clickId": true
+  },
+  "capi": {
+   "periodo": "antes",
+   "leadEnviado": false
+  },
+  "etapa": "LISTO_PARA_COMPRAR",
+  "calificado": false,
+  "asesora": "Asesora C",
+  "compro": false,
+  "primeraCompra": null,
+  "diasHastaCompra": null
+ },
+ {
+  "_id": "L-ejemplo009",
+  "nombre": "Jorge Cano",
+  "llegada": {
+   "$date": "2026-08-04T23:00:00Z"
+  },
+  "mes": "2026-08",
+  "dia": "martes",
+  "diaNum": 2,
+  "hora": 18,
+  "origen": {
+   "tipo": "anuncio",
+   "plataforma": "facebook",
+   "anuncio": "Lavacabezas para salón",
+   "clickId": true
+  },
+  "capi": {
+   "periodo": "antes",
+   "leadEnviado": true
+  },
+  "etapa": "VENTA_GANADA",
+  "calificado": true,
+  "asesora": "Asesora A",
+  "compro": true,
+  "primeraCompra": {
+   "$date": "2026-08-08T23:00:00Z"
+  },
+  "diasHastaCompra": 4
+ },
+ {
+  "_id": "L-ejemplo010",
+  "nombre": "Karen Gil",
+  "llegada": {
+   "$date": "2026-09-22T21:00:00Z"
+  },
+  "mes": "2026-09",
+  "dia": "martes",
+  "diaNum": 2,
+  "hora": 16,
+  "origen": {
+   "tipo": "anuncio",
+   "plataforma": "instagram",
+   "anuncio": "Sillones con envío a todo el Perú",
+   "clickId": true
+  },
+  "capi": {
+   "periodo": "despues",
+   "leadEnviado": false
+  },
+  "etapa": "INACTIVO",
+  "calificado": false,
+  "asesora": "Asesora B",
+  "compro": false,
+  "primeraCompra": null,
+  "diasHastaCompra": null
+ },
+ {
+  "_id": "L-ejemplo011",
+  "nombre": "Luis Ponce",
+  "llegada": {
+   "$date": "2026-10-21T22:00:00Z"
+  },
+  "mes": "2026-10",
+  "dia": "miércoles",
+  "diaNum": 3,
+  "hora": 17,
+  "origen": {
+   "tipo": "anuncio",
+   "plataforma": "instagram",
+   "anuncio": "Lavacabezas para salón",
+   "clickId": true
+  },
+  "capi": {
+   "periodo": "despues",
+   "leadEnviado": false
+  },
+  "etapa": "INACTIVO",
+  "calificado": true,
+  "asesora": "Asesora C",
+  "compro": false,
+  "primeraCompra": null,
+  "diasHastaCompra": null
+ },
+ {
+  "_id": "L-ejemplo012",
+  "nombre": "Marta Ruiz",
+  "llegada": {
+   "$date": "2026-07-05T23:00:00Z"
+  },
+  "mes": "2026-07",
+  "dia": "domingo",
+  "diaNum": 7,
+  "hora": 18,
+  "origen": {
+   "tipo": "directo",
+   "plataforma": null,
+   "anuncio": null,
+   "clickId": false
+  },
+  "capi": {
+   "periodo": "antes",
+   "leadEnviado": true
+  },
+  "etapa": "VENTA_GANADA",
+  "calificado": true,
+  "asesora": "Asesora A",
+  "compro": true,
+  "primeraCompra": {
+   "$date": "2026-07-11T23:00:00Z"
+  },
+  "diasHastaCompra": 6
+ },
+ {
+  "_id": "L-ejemplo013",
+  "nombre": "Nico Salas",
+  "llegada": {
+   "$date": "2026-08-07T18:00:00Z"
+  },
+  "mes": "2026-08",
+  "dia": "viernes",
+  "diaNum": 5,
+  "hora": 13,
+  "origen": {
+   "tipo": "anuncio",
+   "plataforma": "instagram",
+   "anuncio": "Sillones con envío a todo el Perú",
+   "clickId": true
+  },
+  "capi": {
+   "periodo": "antes",
+   "leadEnviado": false
+  },
+  "etapa": "INACTIVO",
+  "calificado": false,
+  "asesora": "Asesora B",
+  "compro": false,
+  "primeraCompra": null,
+  "diasHastaCompra": null
+ },
+ {
+  "_id": "L-ejemplo014",
+  "nombre": "Olga Reyes",
+  "llegada": {
+   "$date": "2026-09-18T14:00:00Z"
+  },
+  "mes": "2026-09",
+  "dia": "viernes",
+  "diaNum": 5,
+  "hora": 9,
+  "origen": {
+   "tipo": "directo",
+   "plataforma": null,
+   "anuncio": null,
+   "clickId": false
+  },
+  "capi": {
+   "periodo": "despues",
+   "leadEnviado": false
+  },
+  "etapa": "INTERESADO",
+  "calificado": false,
+  "asesora": "Asesora C",
+  "compro": false,
+  "primeraCompra": null,
+  "diasHastaCompra": null
+ },
+ {
+  "_id": "L-ejemplo015",
+  "nombre": "Ana Torres",
+  "llegada": {
+   "$date": "2026-10-23T22:00:00Z"
+  },
+  "mes": "2026-10",
+  "dia": "viernes",
+  "diaNum": 5,
+  "hora": 17,
+  "origen": {
+   "tipo": "anuncio",
+   "plataforma": "facebook",
+   "anuncio": "Lavacabezas para salón",
+   "clickId": true
+  },
+  "capi": {
+   "periodo": "despues",
+   "leadEnviado": true
+  },
+  "etapa": "VENTA_GANADA",
+  "calificado": true,
+  "asesora": "Asesora A",
+  "compro": true,
+  "primeraCompra": {
+   "$date": "2026-10-31T22:00:00Z"
+  },
+  "diasHastaCompra": 8
+ },
+ {
+  "_id": "L-ejemplo016",
+  "nombre": "Bruno Díaz",
+  "llegada": {
+   "$date": "2026-10-16T19:00:00Z"
+  },
+  "mes": "2026-10",
+  "dia": "viernes",
+  "diaNum": 5,
+  "hora": 14,
+  "origen": {
+   "tipo": "anuncio",
+   "plataforma": "instagram",
+   "anuncio": "Mobiliario para tu barbería",
+   "clickId": true
+  },
+  "capi": {
+   "periodo": "despues",
+   "leadEnviado": false
+  },
+  "etapa": "INTERESADO",
+  "calificado": true,
+  "asesora": "Asesora B",
+  "compro": false,
+  "primeraCompra": null,
+  "diasHastaCompra": null
+ },
+ {
+  "_id": "L-ejemplo017",
+  "nombre": "Carla Ríos",
+  "llegada": {
+   "$date": "2026-10-15T23:00:00Z"
+  },
+  "mes": "2026-10",
+  "dia": "jueves",
+  "diaNum": 4,
+  "hora": 18,
+  "origen": {
+   "tipo": "anuncio",
+   "plataforma": "facebook",
+   "anuncio": "Sillones con envío a todo el Perú",
+   "clickId": true
+  },
+  "capi": {
+   "periodo": "despues",
+   "leadEnviado": false
+  },
+  "etapa": "INTERESADO",
+  "calificado": true,
+  "asesora": "Asesora C",
+  "compro": false,
+  "primeraCompra": null,
+  "diasHastaCompra": null
+ },
+ {
+  "_id": "L-ejemplo018",
+  "nombre": "Diego Paz",
+  "llegada": {
+   "$date": "2026-10-02T22:00:00Z"
+  },
+  "mes": "2026-10",
+  "dia": "viernes",
+  "diaNum": 5,
+  "hora": 17,
+  "origen": {
+   "tipo": "directo",
+   "plataforma": null,
+   "anuncio": null,
+   "clickId": false
+  },
+  "capi": {
+   "periodo": "despues",
+   "leadEnviado": true
+  },
+  "etapa": "VENTA_GANADA",
+  "calificado": true,
+  "asesora": "Asesora A",
+  "compro": true,
+  "primeraCompra": {
+   "$date": "2026-10-05T22:00:00Z"
+  },
+  "diasHastaCompra": 3
+ },
+ {
+  "_id": "L-ejemplo019",
+  "nombre": "Elena Soto",
+  "llegada": {
+   "$date": "2026-10-11T23:00:00Z"
+  },
+  "mes": "2026-10",
+  "dia": "domingo",
+  "diaNum": 7,
+  "hora": 18,
+  "origen": {
+   "tipo": "anuncio",
+   "plataforma": "instagram",
+   "anuncio": "Sillones con envío a todo el Perú",
+   "clickId": true
+  },
+  "capi": {
+   "periodo": "despues",
+   "leadEnviado": false
+  },
+  "etapa": "INTERESADO",
+  "calificado": false,
+  "asesora": "Asesora B",
+  "compro": false,
+  "primeraCompra": null,
+  "diasHastaCompra": null
+ },
+ {
+  "_id": "L-ejemplo020",
+  "nombre": "Fabio Luna",
+  "llegada": {
+   "$date": "2026-10-16T23:00:00Z"
+  },
+  "mes": "2026-10",
+  "dia": "viernes",
+  "diaNum": 5,
+  "hora": 18,
+  "origen": {
+   "tipo": "anuncio",
+   "plataforma": "instagram",
+   "anuncio": "Mobiliario para tu barbería",
+   "clickId": true
+  },
+  "capi": {
+   "periodo": "despues",
+   "leadEnviado": false
+  },
+  "etapa": "INTERESADO",
+  "calificado": false,
+  "asesora": "Asesora C",
+  "compro": false,
+  "primeraCompra": null,
+  "diasHastaCompra": null
+ },
+ {
+  "_id": "L-ejemplo021",
+  "nombre": "Gina Vega",
+  "llegada": {
+   "$date": "2026-10-26T23:00:00Z"
+  },
+  "mes": "2026-10",
+  "dia": "lunes",
+  "diaNum": 1,
+  "hora": 18,
+  "origen": {
+   "tipo": "anuncio",
+   "plataforma": "instagram",
+   "anuncio": "Lavacabezas para salón",
+   "clickId": true
+  },
+  "capi": {
+   "periodo": "despues",
+   "leadEnviado": true
+  },
+  "etapa": "VENTA_GANADA",
+  "calificado": true,
+  "asesora": "Asesora A",
+  "compro": true,
+  "primeraCompra": {
+   "$date": "2026-10-28T23:00:00Z"
+  },
+  "diasHastaCompra": 2
+ },
+ {
+  "_id": "L-ejemplo022",
+  "nombre": "Hugo Lara",
+  "llegada": {
+   "$date": "2026-10-13T14:00:00Z"
+  },
+  "mes": "2026-10",
+  "dia": "martes",
+  "diaNum": 2,
+  "hora": 9,
+  "origen": {
+   "tipo": "directo",
+   "plataforma": null,
+   "anuncio": null,
+   "clickId": false
+  },
+  "capi": {
+   "periodo": "despues",
+   "leadEnviado": false
+  },
+  "etapa": "INTERESADO",
+  "calificado": true,
+  "asesora": "Asesora B",
+  "compro": false,
+  "primeraCompra": null,
+  "diasHastaCompra": null
+ },
+ {
+  "_id": "L-ejemplo023",
+  "nombre": "Irene Mora",
+  "llegada": {
+   "$date": "2026-10-12T19:00:00Z"
+  },
+  "mes": "2026-10",
+  "dia": "lunes",
+  "diaNum": 1,
+  "hora": 14,
+  "origen": {
+   "tipo": "directo",
+   "plataforma": null,
+   "anuncio": null,
+   "clickId": false
+  },
+  "capi": {
+   "periodo": "despues",
+   "leadEnviado": false
+  },
+  "etapa": "INTERESADO",
+  "calificado": false,
+  "asesora": "Asesora C",
+  "compro": false,
+  "primeraCompra": null,
+  "diasHastaCompra": null
+ },
+ {
+  "_id": "L-ejemplo024",
+  "nombre": "Jorge Cano",
+  "llegada": {
+   "$date": "2026-10-11T18:00:00Z"
+  },
+  "mes": "2026-10",
+  "dia": "domingo",
+  "diaNum": 7,
+  "hora": 13,
+  "origen": {
+   "tipo": "anuncio",
+   "plataforma": "facebook",
+   "anuncio": "Lavacabezas para salón",
+   "clickId": true
+  },
+  "capi": {
+   "periodo": "despues",
+   "leadEnviado": true
+  },
+  "etapa": "VENTA_GANADA",
+  "calificado": true,
+  "asesora": "Asesora A",
+  "compro": true,
+  "primeraCompra": {
+   "$date": "2026-10-15T18:00:00Z"
+  },
+  "diasHastaCompra": 4
+ },
+ {
+  "_id": "L-ejemplo025",
+  "nombre": "Karen Gil",
+  "llegada": {
+   "$date": "2026-10-05T23:00:00Z"
+  },
+  "mes": "2026-10",
+  "dia": "lunes",
+  "diaNum": 1,
+  "hora": 18,
+  "origen": {
+   "tipo": "anuncio",
+   "plataforma": "instagram",
+   "anuncio": "Sillones con envío a todo el Perú",
+   "clickId": true
+  },
+  "capi": {
+   "periodo": "despues",
+   "leadEnviado": false
+  },
+  "etapa": "LISTO_PARA_COMPRAR",
+  "calificado": false,
+  "asesora": "Asesora B",
+  "compro": false,
+  "primeraCompra": null,
+  "diasHastaCompra": null
+ },
+ {
+  "_id": "L-ejemplo026",
+  "nombre": "Luis Ponce",
+  "llegada": {
+   "$date": "2026-10-23T15:00:00Z"
+  },
+  "mes": "2026-10",
+  "dia": "viernes",
+  "diaNum": 5,
+  "hora": 10,
+  "origen": {
+   "tipo": "anuncio",
+   "plataforma": "facebook",
+   "anuncio": "Mobiliario para tu barbería",
+   "clickId": true
+  },
+  "capi": {
+   "periodo": "despues",
+   "leadEnviado": false
+  },
+  "etapa": "INTERESADO",
+  "calificado": true,
+  "asesora": "Asesora C",
+  "compro": false,
+  "primeraCompra": null,
+  "diasHastaCompra": null
+ },
+ {
+  "_id": "L-ejemplo027",
+  "nombre": "Marta Ruiz",
+  "llegada": {
+   "$date": "2026-10-18T14:00:00Z"
+  },
+  "mes": "2026-10",
+  "dia": "domingo",
+  "diaNum": 7,
+  "hora": 9,
+  "origen": {
+   "tipo": "anuncio",
+   "plataforma": "facebook",
+   "anuncio": "Lavacabezas para salón",
+   "clickId": true
+  },
+  "capi": {
+   "periodo": "despues",
+   "leadEnviado": true
+  },
+  "etapa": "VENTA_GANADA",
+  "calificado": true,
+  "asesora": "Asesora A",
+  "compro": true,
+  "primeraCompra": {
+   "$date": "2026-10-19T14:00:00Z"
+  },
+  "diasHastaCompra": 1
+ },
+ {
+  "_id": "L-ejemplo028",
+  "nombre": "Nico Salas",
+  "llegada": {
+   "$date": "2026-10-26T22:00:00Z"
+  },
+  "mes": "2026-10",
+  "dia": "lunes",
+  "diaNum": 1,
+  "hora": 17,
+  "origen": {
+   "tipo": "directo",
+   "plataforma": null,
+   "anuncio": null,
+   "clickId": false
+  },
+  "capi": {
+   "periodo": "despues",
+   "leadEnviado": false
+  },
+  "etapa": "LISTO_PARA_COMPRAR",
+  "calificado": false,
+  "asesora": "Asesora B",
+  "compro": false,
+  "primeraCompra": null,
+  "diasHastaCompra": null
+ },
+ {
+  "_id": "L-ejemplo029",
+  "nombre": "Olga Reyes",
+  "llegada": {
+   "$date": "2026-10-13T18:00:00Z"
+  },
+  "mes": "2026-10",
+  "dia": "martes",
+  "diaNum": 2,
+  "hora": 13,
+  "origen": {
+   "tipo": "anuncio",
+   "plataforma": "instagram",
+   "anuncio": "Mobiliario para tu barbería",
+   "clickId": true
+  },
+  "capi": {
+   "periodo": "despues",
+   "leadEnviado": false
+  },
+  "etapa": "INTERESADO",
+  "calificado": false,
+  "asesora": "Asesora C",
+  "compro": false,
+  "primeraCompra": null,
+  "diasHastaCompra": null
+ }
+]

@@ -1,0 +1,302 @@
+[
+ {
+  "_id": "V-ejemplo000",
+  "fecha": {
+   "$date": "2026-07-11T19:00:00Z"
+  },
+  "mes": "2026-07",
+  "dia": "sábado",
+  "diaNum": 6,
+  "hora": 14,
+  "tipo": "boleta",
+  "cliente": "Ana Torres",
+  "canal": "whatsapp",
+  "leadId": "L-ejemplo000",
+  "categorias": [
+   "HERRAMIENTAS"
+  ],
+  "items": [
+   {
+    "producto": "Secadora profesional",
+    "categoria": "HERRAMIENTAS",
+    "cantidad": 2
+   }
+  ],
+  "capiEnviado": false
+ },
+ {
+  "_id": "V-ejemplo001",
+  "fecha": {
+   "$date": "2026-10-17T17:00:00Z"
+  },
+  "mes": "2026-10",
+  "dia": "sábado",
+  "diaNum": 6,
+  "hora": 12,
+  "tipo": "boleta",
+  "cliente": "Diego Paz",
+  "canal": "whatsapp",
+  "leadId": "L-ejemplo003",
+  "categorias": [
+   "HERRAMIENTAS"
+  ],
+  "items": [
+   {
+    "producto": "Secadora profesional",
+    "categoria": "HERRAMIENTAS",
+    "cantidad": 1
+   }
+  ],
+  "capiEnviado": true
+ },
+ {
+  "_id": "V-ejemplo002",
+  "fecha": {
+   "$date": "2026-09-26T22:00:00Z"
+  },
+  "mes": "2026-09",
+  "dia": "sábado",
+  "diaNum": 6,
+  "hora": 17,
+  "tipo": "boleta",
+  "cliente": "Gina Vega",
+  "canal": "whatsapp",
+  "leadId": "L-ejemplo006",
+  "categorias": [
+   "HERRAMIENTAS"
+  ],
+  "items": [
+   {
+    "producto": "Secadora profesional",
+    "categoria": "HERRAMIENTAS",
+    "cantidad": 2
+   }
+  ],
+  "capiEnviado": true
+ },
+ {
+  "_id": "V-ejemplo003",
+  "fecha": {
+   "$date": "2026-08-08T23:00:00Z"
+  },
+  "mes": "2026-08",
+  "dia": "sábado",
+  "diaNum": 6,
+  "hora": 18,
+  "tipo": "boleta",
+  "cliente": "Jorge Cano",
+  "canal": "whatsapp",
+  "leadId": "L-ejemplo009",
+  "categorias": [
+   "BARBERÍA"
+  ],
+  "items": [
+   {
+    "producto": "Sillón barbero clásico",
+    "categoria": "BARBERÍA",
+    "cantidad": 2
+   }
+  ],
+  "capiEnviado": false
+ },
+ {
+  "_id": "V-ejemplo004",
+  "fecha": {
+   "$date": "2026-07-11T23:00:00Z"
+  },
+  "mes": "2026-07",
+  "dia": "sábado",
+  "diaNum": 6,
+  "hora": 18,
+  "tipo": "boleta",
+  "cliente": "Marta Ruiz",
+  "canal": "whatsapp",
+  "leadId": "L-ejemplo012",
+  "categorias": [
+   "SPA"
+  ],
+  "items": [
+   {
+    "producto": "Camilla de spa",
+    "categoria": "SPA",
+    "cantidad": 2
+   }
+  ],
+  "capiEnviado": false
+ },
+ {
+  "_id": "V-ejemplo005",
+  "fecha": {
+   "$date": "2026-10-31T22:00:00Z"
+  },
+  "mes": "2026-10",
+  "dia": "sábado",
+  "diaNum": 6,
+  "hora": 17,
+  "tipo": "boleta",
+  "cliente": "Ana Torres",
+  "canal": "whatsapp",
+  "leadId": "L-ejemplo015",
+  "categorias": [
+   "BARBERÍA"
+  ],
+  "items": [
+   {
+    "producto": "Sillón barbero clásico",
+    "categoria": "BARBERÍA",
+    "cantidad": 2
+   }
+  ],
+  "capiEnviado": true
+ },
+ {
+  "_id": "V-ejemplo006",
+  "fecha": {
+   "$date": "2026-10-05T22:00:00Z"
+  },
+  "mes": "2026-10",
+  "dia": "lunes",
+  "diaNum": 1,
+  "hora": 17,
+  "tipo": "boleta",
+  "cliente": "Diego Paz",
+  "canal": "whatsapp",
+  "leadId": "L-ejemplo018",
+  "categorias": [
+   "SALÓN"
+  ],
+  "items": [
+   {
+    "producto": "Lavacabezas cerámico",
+    "categoria": "SALÓN",
+    "cantidad": 1
+   }
+  ],
+  "capiEnviado": true
+ },
+ {
+  "_id": "V-ejemplo007",
+  "fecha": {
+   "$date": "2026-10-28T23:00:00Z"
+  },
+  "mes": "2026-10",
+  "dia": "miércoles",
+  "diaNum": 3,
+  "hora": 18,
+  "tipo": "boleta",
+  "cliente": "Gina Vega",
+  "canal": "whatsapp",
+  "leadId": "L-ejemplo021",
+  "categorias": [
+   "HERRAMIENTAS"
+  ],
+  "items": [
+   {
+    "producto": "Secadora profesional",
+    "categoria": "HERRAMIENTAS",
+    "cantidad": 1
+   }
+  ],
+  "capiEnviado": true
+ },
+ {
+  "_id": "V-ejemplo008",
+  "fecha": {
+   "$date": "2026-10-15T18:00:00Z"
+  },
+  "mes": "2026-10",
+  "dia": "jueves",
+  "diaNum": 4,
+  "hora": 13,
+  "tipo": "boleta",
+  "cliente": "Jorge Cano",
+  "canal": "whatsapp",
+  "leadId": "L-ejemplo024",
+  "categorias": [
+   "HERRAMIENTAS"
+  ],
+  "items": [
+   {
+    "producto": "Secadora profesional",
+    "categoria": "HERRAMIENTAS",
+    "cantidad": 1
+   }
+  ],
+  "capiEnviado": true
+ },
+ {
+  "_id": "V-ejemplo009",
+  "fecha": {
+   "$date": "2026-10-19T14:00:00Z"
+  },
+  "mes": "2026-10",
+  "dia": "lunes",
+  "diaNum": 1,
+  "hora": 9,
+  "tipo": "boleta",
+  "cliente": "Marta Ruiz",
+  "canal": "whatsapp",
+  "leadId": "L-ejemplo027",
+  "categorias": [
+   "SALÓN"
+  ],
+  "items": [
+   {
+    "producto": "Lavacabezas cerámico",
+    "categoria": "SALÓN",
+    "cantidad": 1
+   }
+  ],
+  "capiEnviado": true
+ },
+ {
+  "_id": "V-ejemplo010",
+  "fecha": {
+   "$date": "2026-10-10T16:00:00Z"
+  },
+  "mes": "2026-10",
+  "dia": "sábado",
+  "diaNum": 6,
+  "hora": 11,
+  "tipo": "factura",
+  "cliente": "Cliente de tienda",
+  "canal": "otro",
+  "leadId": null,
+  "categorias": [
+   "BARBERÍA"
+  ],
+  "items": [
+   {
+    "producto": "Sillón barbero clásico",
+    "categoria": "BARBERÍA",
+    "cantidad": 1
+   }
+  ],
+  "capiEnviado": false
+ },
+ {
+  "_id": "V-ejemplo011",
+  "fecha": {
+   "$date": "2026-10-17T16:00:00Z"
+  },
+  "mes": "2026-10",
+  "dia": "sábado",
+  "diaNum": 6,
+  "hora": 11,
+  "tipo": "factura",
+  "cliente": "Cliente de tienda",
+  "canal": "otro",
+  "leadId": null,
+  "categorias": [
+   "BARBERÍA"
+  ],
+  "items": [
+   {
+    "producto": "Sillón barbero clásico",
+    "categoria": "BARBERÍA",
+    "cantidad": 1
+   }
+  ],
+  "capiEnviado": false
+ }
+]
