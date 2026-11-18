@@ -197,7 +197,7 @@ h1, h2, .num { font-family: Jakarta, sans-serif; }
 .logo { width: 46px; height: 46px; border-radius: 12px; background: #16a34a; color: #0a0a0a; display: grid; place-items: center; }
 .logo svg { width: 26px; height: 26px; }
 .chip { background: #16a34a; color: #0a0a0a; font-size: 15px; font-weight: 800; padding: 3px 9px; border-radius: 7px; }
-.pie { position: absolute; bottom: 52px; left: 80px; right: 80px; color: #a1a1aa; font-size: 22px; display: flex; justify-content: space-between; }
+.pie { position: absolute; bottom: 150px; left: 80px; right: 80px; color: #a1a1aa; font-size: 22px; display: flex; justify-content: space-between; }
 svg { stroke-width: 2; }
 """
 
@@ -277,7 +277,7 @@ h2 {{ font-size: 32px; font-weight: 800; }}
 .regla svg {{ width: 26px; height: 26px; color: #4ade80; flex: none; }}
 .flecha {{ display: grid; place-items: center; color: #4ade80; }}
 .flecha svg {{ width: 60px; height: 60px; }}
-.control {{ position: absolute; bottom: 130px; left: 80px; right: 80px; display: flex; gap: 22px; }}
+.control {{ position: absolute; bottom: 215px; left: 80px; right: 80px; display: flex; gap: 22px; }}
 .dato {{ background: #16a34a; color: #0a0a0a; border-radius: 18px; padding: 18px 28px; font-size: 26px; font-weight: 700; }}
 .dato b {{ font-family: Jakarta; font-size: 40px; font-weight: 800; margin-right: 10px; }}
 </style>
@@ -314,11 +314,11 @@ h1 b {{ color: #4ade80; }}
 .ic svg {{ width: 38px; height: 38px; }}
 .paso h2 {{ font-size: 34px; font-weight: 800; }}
 .paso p {{ font-size: 25px; color: #d4d4d8; margin-top: 8px; line-height: 1.35; }}
-.datos {{ position: absolute; top: 640px; left: 80px; right: 80px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }}
+.datos {{ position: absolute; top: 600px; left: 80px; right: 80px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }}
 .d {{ border: 1px solid #16a34a; border-radius: 18px; padding: 22px 26px; }}
 .d b {{ display: block; font-family: Jakarta; font-size: 40px; font-weight: 800; color: #4ade80; }}
 .d span {{ font-size: 22px; color: #e4e4e7; }}
-.links {{ position: absolute; bottom: 120px; left: 80px; display: flex; gap: 40px; font-size: 30px; font-weight: 700; }}
+.links {{ position: absolute; bottom: 205px; left: 80px; display: flex; gap: 40px; font-size: 30px; font-weight: 700; }}
 .links span {{ display: flex; gap: 12px; align-items: center; }}
 .links svg {{ width: 32px; height: 32px; color: #4ade80; }}
 </style>
@@ -570,7 +570,7 @@ WrapStyle: 0
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
 Style: Sub,Segoe UI,46,&H00FFFFFF,&H00FFFFFF,&H380A0A0A,&H380A0A0A,1,0,0,0,100,100,0,0,3,14,0,2,120,120,46,1
 Style: Tag,Segoe UI,30,&H000A0A0A,&H000A0A0A,&H004AA316,&H004AA316,1,0,0,0,100,100,0,0,3,10,0,7,70,70,44,1
-Style: Titulo,Segoe UI,84,&H00FFFFFF,&H00FFFFFF,&HE60A0A0A,&HE60A0A0A,1,0,0,0,100,100,0,0,3,26,0,5,100,100,0,1
+Style: Titulo,Segoe UI,84,&H00FFFFFF,&H00FFFFFF,&H140A0A0A,&H140A0A0A,1,0,0,0,100,100,0,0,3,26,0,5,100,100,0,1
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
