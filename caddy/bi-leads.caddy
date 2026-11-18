@@ -1,0 +1,15 @@
+# Bloque para el Caddy del VPS (el de SIRAC). Va en /opt/caddy-extra/ y Caddy lo importa.
+# Caddy saca y renueva solo el certificado SSL de Let's Encrypt.
+bi.dbltech.tech {
+	encode zstd gzip
+
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		-Server
+	}
+
+	reverse_proxy bi-leads-web:80
+}

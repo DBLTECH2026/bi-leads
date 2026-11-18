@@ -1,0 +1,50 @@
+# Luis López · BI en el VPS: MongoDB + API Spring Boot + cliente web (nginx).
+# El SSL y el dominio los pone el Caddy que ya corre en el VPS (red sirac_default).
+name: bi-leads
+
+services:
+  mongo:
+    image: mongo:8.0
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USUARIO}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_CLAVE}
+    volumes:
+      - mongo_datos:/data/db
+    ports:
+      - "127.0.0.1:27018:27017"   # solo dentro del VPS: Compass entra por túnel SSH
+    networks: [interna]
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build: ./api
+    restart: unless-stopped
+    environment:
+      MONGO_URI: mongodb://${MONGO_USUARIO}:${MONGO_CLAVE}@mongo:27017/bi_leads?authSource=admin
+      BI_CLAVE: ${BI_CLAVE}
+      BI_SECRETO: ${BI_SECRETO}
+    depends_on:
+      mongo:
+        condition: service_healthy
+    networks: [interna]
+
+  web:
+    build: ./web
+    restart: unless-stopped
+    depends_on: [api]
+    networks:
+      interna: {}
+      sirac_default:
+        aliases: [bi-leads-web]
+
+volumes:
+  mongo_datos:
+
+networks:
+  interna: {}
+  sirac_default:
+    external: true
