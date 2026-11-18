@@ -1,0 +1,12 @@
+datos/*.json
+!datos/ejemplo/
+.env
+*.env
+api/target/
+__pycache__/
+video/crudo/
+video/voz/
+video/*.mp4
+.idea/
+*.log
+.env.local
