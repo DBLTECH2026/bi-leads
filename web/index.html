@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="es-PE">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Luis López · BI · Leads y ventas</title>
+  <link rel="icon" href="img/favicon.svg">
+  <link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+
+<!-- Ingreso con clave -->
+<section id="ingreso" class="ingreso" hidden>
+  <form id="form-ingreso" class="ingreso-tarjeta">
+    <span class="ingreso-icono"><i data-lucide="chart-no-axes-combined"></i></span>
+    <div class="marca marca-clara"><b class="marca-nombre">Luis López</b><span class="chip-bi">BI</span></div>
+    <h1>Leads y ventas</h1>
+    <p class="suave">Inteligencia de negocios · jul–oct 2026</p>
+    <label class="campo">
+      <i data-lucide="lock"></i>
+      <input id="clave" type="password" placeholder="Clave" autocomplete="current-password" required>
+    </label>
+    <button class="boton" type="submit">Entrar <i data-lucide="arrow-right"></i></button>
+    <p id="ingreso-error" class="error" hidden>Clave incorrecta</p>
+  </form>
+</section>
+
+<div id="app" hidden>
+  <header class="barra">
+    <div class="marca">
+      <span class="logo-bi"><i data-lucide="chart-no-axes-combined"></i></span>
+      <b class="marca-nombre">Luis López</b>
+      <span class="chip-bi">BI</span>
+    </div>
+    <nav class="pestanas" role="tablist">
+      <button data-tab="mes" class="activa"><i data-lucide="layout-dashboard"></i>Resumen</button>
+      <button data-tab="capi"><i data-lucide="trending-up"></i>CAPI</button>
+      <button data-tab="clientes"><i data-lucide="users"></i>Clientes</button>
+      <button data-tab="hallazgos"><i data-lucide="lightbulb"></i>Hallazgos</button>
+    </nav>
+    <div class="barra-der">
+      <label class="selector" title="Mes">
+        <i data-lucide="calendar"></i>
+        <select id="mes">
+          <option value="2026-07">Julio 2026</option>
+          <option value="2026-08">Agosto 2026</option>
+          <option value="2026-09">Setiembre 2026</option>
+          <option value="2026-10" selected>Octubre 2026</option>
+        </select>
+      </label>
+      <span id="chip-mongo" class="chip-mongo" title="Base de datos"><i data-lucide="database"></i><span></span></span>
+      <button id="salir" class="icono-boton" title="Salir"><i data-lucide="log-out"></i></button>
+    </div>
+  </header>
+
+  <main>
+    <!-- RESUMEN DEL MES -->
+    <section data-panel="mes" class="panel">
+      <div class="titulo">
+        <span class="titulo-ilus"><i data-lucide="layout-dashboard"></i></span>
+        <div>
+          <h2 id="titulo-mes">Resumen</h2>
+          <p class="suave">Clientes que escribieron por WhatsApp y lo que compraron</p>
+        </div>
+      </div>
+
+      <div id="kpis" class="kpis"></div>
+
+      <div class="grilla g2">
+        <article class="tarjeta">
+          <h3><i data-lucide="filter"></i>Del mensaje a la compra</h3>
+          <div id="embudo" class="embudo"></div>
+        </article>
+        <article class="tarjeta">
+          <h3><i data-lucide="armchair"></i>¿Qué compraron?</h3>
+          <p class="nota">Unidades vendidas por rubro</p>
+          <div class="lienzo"><canvas id="g-categorias"></canvas></div>
+        </article>
+      </div>
+
+      <div class="grilla g2">
+        <article class="tarjeta">
+          <h3><i data-lucide="calendar-days"></i>¿Qué día compran?</h3>
+          <p class="nota">Comprobantes por día de la semana</p>
+          <div class="lienzo"><canvas id="g-dias"></canvas></div>
+        </article>
+        <article class="tarjeta">
+          <h3><i data-lucide="clock"></i>¿A qué hora compran?</h3>
+          <p class="nota">Comprobantes por día y hora · más oscuro = más ventas</p>
+          <div id="calor" class="calor"></div>
+        </article>
+      </div>
+
+      <div class="grilla g3">
+        <article class="tarjeta">
+          <h3><i data-lucide="megaphone"></i>¿De dónde llegan?</h3>
+          <table class="mini" id="t-origen"></table>
+        </article>
+        <article class="tarjeta">
+          <h3><i data-lucide="badge-check"></i>Anuncios que más venden</h3>
+          <table class="mini" id="t-anuncios"></table>
+        </article>
+        <article class="tarjeta">
+          <h3><i data-lucide="headset"></i>Asesoras</h3>
+          <table class="mini" id="t-asesoras"></table>
+        </article>
+      </div>
+    </section>
+
+    <!-- CAPI -->
+    <section data-panel="capi" class="panel" hidden>
+      <div class="titulo">
+        <span class="titulo-ilus"><i data-lucide="trending-up"></i></span>
+        <div>
+          <h2>Meta CAPI: antes y después</h2>
+          <p class="suave">CAPI le avisa a Meta qué clientes calificaron y compraron · activa desde el 30-ago-2026</p>
+        </div>
+      </div>
+      <div class="capi-hero">
+        <div class="hero-numero"><span id="capi-variacion">—</span><small>ventas por cada 100 leads</small></div>
+        <div id="capi-periodos" class="capi-periodos"></div>
+      </div>
+      <div class="leyenda">
+        <span><i class="cuadro antes"></i>Antes de CAPI (jul–ago)</span>
+        <span><i class="cuadro despues"></i>Con CAPI (sep–oct)</span>
+      </div>
+      <div class="grilla g3">
+        <article class="tarjeta"><h3>Leads por mes</h3><div class="lienzo bajo"><canvas id="g-capi-leads"></canvas></div></article>
+        <article class="tarjeta"><h3>Ventas por cada 100 leads</h3><div class="lienzo bajo"><canvas id="g-capi-por100"></canvas></div></article>
+        <article class="tarjeta"><h3>% listos para comprar</h3><div class="lienzo bajo"><canvas id="g-capi-calif"></canvas></div></article>
+      </div>
+      <article class="tarjeta">
+        <h3><i data-lucide="table"></i>Detalle por mes</h3>
+        <table class="tabla" id="t-capi"></table>
+        <p class="aviso"><i data-lucide="info"></i><span id="capi-nota"></span></p>
+      </article>
+    </section>
+
+    <!-- CLIENTES -->
+    <section data-panel="clientes" class="panel" hidden>
+      <div class="filtros">
+        <label class="campo buscar"><i data-lucide="search"></i><input id="buscar" type="search" placeholder="Buscar por nombre"></label>
+        <div class="segmento" id="f-compro">
+          <button data-v="" class="activa">Todos</button>
+          <button data-v="true">Compraron</button>
+          <button data-v="false">No compraron</button>
+        </div>
+        <span id="total-clientes" class="suave"></span>
+      </div>
+      <article class="tarjeta sin-relleno">
+        <table class="tabla" id="t-clientes"></table>
+        <div id="clientes-vacio" class="vacio" hidden><i data-lucide="search-x"></i><p>Sin resultados</p></div>
+      </article>
+      <div class="paginas">
+        <button id="pag-ant" class="icono-boton"><i data-lucide="chevron-left"></i></button>
+        <span id="pag-num"></span>
+        <button id="pag-sig" class="icono-boton"><i data-lucide="chevron-right"></i></button>
+      </div>
+    </section>
+
+    <!-- HALLAZGOS -->
+    <section data-panel="hallazgos" class="panel" hidden>
+      <div class="hallazgos-cabecera">
+        <span class="titulo-ilus"><i data-lucide="lightbulb"></i></span>
+        <div>
+          <h2>Lo que dicen los datos</h2>
+          <p class="suave" id="hallazgos-mes"></p>
+        </div>
+      </div>
+      <div id="hallazgos" class="hallazgos"></div>
+    </section>
+  </main>
+
+  <footer class="pie">Luis López Lapa · Inteligencia de Negocios 2026 · datos reales anonimizados, sin montos · foto del 18-nov-2026 · MongoDB + Spring Boot</footer>
+</div>
+
+<div id="tip" class="tip" hidden></div>
+
+<script src="vendor/chart.umd.min.js"></script>
+<script src="vendor/lucide.min.js"></script>
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
