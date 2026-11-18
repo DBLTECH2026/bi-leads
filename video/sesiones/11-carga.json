@@ -1,0 +1,14 @@
+{
+ "titulo": "Carga de datos",
+ "pasos": [
+  {
+   "host": "pc",
+   "ver": "scp datos/leads.json datos/ventas.json root@2.25.216.93:/opt/bi-leads/datos/",
+   "correr": "scp -i ~/.ssh/sirac_vps -o BatchMode=yes datos/leads.json datos/ventas.json root@2.25.216.93:/opt/bi-leads/datos/ && ls -lh datos/*.json | awk '{print $5, $9}'"
+  },
+  {
+   "cwd": "/opt/bi-leads",
+   "ver": "./scripts/cargar-datos.sh"
+  }
+ ]
+}

@@ -1,0 +1,20 @@
+{
+ "titulo": "ETL",
+ "pasos": [
+  {
+   "host": "pc",
+   "ver": "python -m pytest etl -q",
+   "correr": "python -m pytest etl -q -p no:anyio 2>&1 | grep -v -i warning | grep -v '^$' | tail -3"
+  },
+  {
+   "host": "pc",
+   "ver": "python -m etl.extraer",
+   "correr": "PYTHONIOENCODING=utf-8 python -u -m etl.extraer"
+  },
+  {
+   "host": "pc",
+   "ver": "python -m etl.cargar --db bi_leads",
+   "correr": "PYTHONIOENCODING=utf-8 python -u -m etl.cargar --db bi_leads"
+  }
+ ]
+}

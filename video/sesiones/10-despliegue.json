@@ -1,0 +1,42 @@
+{
+ "titulo": "Despliegue en el VPS",
+ "pasos": [
+  {
+   "host": "pc",
+   "ver": "ssh root@2.25.216.93",
+   "solo_ver": true
+  },
+  {
+   "cwd": "/root",
+   "ver": "hostnamectl --static && lsb_release -ds && docker --version"
+  },
+  {
+   "cwd": "/opt",
+   "ver": "git clone https://github.com/DBLTECH2026/bi-leads.git"
+  },
+  {
+   "cwd": "/opt",
+   "ver": "cd bi-leads && ls",
+   "correr": "cd bi-leads && ls"
+  },
+  {
+   "cwd": "/opt/bi-leads",
+   "ver": "cp .env.ejemplo .env && nano .env",
+   "correr": "cp .env.ejemplo .env && sed -i \"s/^MONGO_CLAVE=.*/MONGO_CLAVE=$(openssl rand -hex 16)/; s/^BI_CLAVE=.*/BI_CLAVE={BI_CLAVE}/; s/^BI_SECRETO=.*/BI_SECRETO=$(openssl rand -hex 32)/\" .env && chmod 600 .env"
+  },
+  {
+   "cwd": "/opt/bi-leads",
+   "ver": "sed 's/=.*/=********/' .env"
+  },
+  {
+   "cwd": "/opt/bi-leads",
+   "ver": "docker compose up -d --build",
+   "correr": "docker compose --progress plain up -d --build 2>&1"
+  },
+  {
+   "cwd": "/opt/bi-leads",
+   "ver": "docker compose ps",
+   "correr": "docker compose ps --format 'table {{.Service}}\t{{.Image}}\t{{.Status}}'"
+  }
+ ]
+}

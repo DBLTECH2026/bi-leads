@@ -1,0 +1,45 @@
+{
+ "titulo": "Cada contenedor",
+ "pasos": [
+  {
+   "cwd": "/opt/bi-leads",
+   "ver": "docker compose ps",
+   "correr": "docker compose ps --format 'table {{.Service}}\t{{.Image}}\t{{.Status}}'"
+  },
+  {
+   "cwd": "/opt/bi-leads",
+   "ver": "source .env && URI=\"mongodb://$MONGO_USUARIO:$MONGO_CLAVE@localhost/bi_leads?authSource=admin\"",
+   "solo_ver": true
+  },
+  {
+   "cwd": "/opt/bi-leads",
+   "ver": "docker compose exec mongo mongosh \"$URI\" --eval 'db.getCollectionNames()'",
+   "correr": "set -a; . ./.env; set +a; URI=\"mongodb://$MONGO_USUARIO:$MONGO_CLAVE@localhost/bi_leads?authSource=admin\"; docker compose exec -T mongo mongosh \"$URI\" --quiet --eval 'db.getCollectionNames()'"
+  },
+  {
+   "cwd": "/opt/bi-leads",
+   "ver": "docker compose exec mongo mongosh \"$URI\" --eval 'db.leads.countDocuments({ mes: \"2026-10\", compro: true })'",
+   "correr": "set -a; . ./.env; set +a; URI=\"mongodb://$MONGO_USUARIO:$MONGO_CLAVE@localhost/bi_leads?authSource=admin\"; docker compose exec -T mongo mongosh \"$URI\" --quiet --eval 'db.leads.countDocuments({ mes: \"2026-10\", compro: true })'"
+  },
+  {
+   "cwd": "/opt/bi-leads",
+   "ver": "docker compose exec mongo mongosh \"$URI\" --eval 'db.ventas.aggregate([{ $match: { mes: \"2026-10\" } }, { $group: { _id: \"$dia\", ventas: { $sum: 1 } } }, { $sort: { ventas: -1 } }, { $limit: 3 }])'",
+   "correr": "set -a; . ./.env; set +a; URI=\"mongodb://$MONGO_USUARIO:$MONGO_CLAVE@localhost/bi_leads?authSource=admin\"; docker compose exec -T mongo mongosh \"$URI\" --quiet --eval 'db.ventas.aggregate([{ $match: { mes: \"2026-10\" } }, { $group: { _id: \"$dia\", ventas: { $sum: 1 } } }, { $sort: { ventas: -1 } }, { $limit: 3 }])'"
+  },
+  {
+   "cwd": "/opt/bi-leads",
+   "ver": "docker compose logs api | grep Started",
+   "correr": "docker compose logs --no-log-prefix api | grep Started"
+  },
+  {
+   "cwd": "/opt/bi-leads",
+   "ver": "docker compose exec web wget -qO- http://api:8080/api/salud",
+   "correr": "docker compose exec -T web wget -qO- http://api:8080/api/salud; echo"
+  },
+  {
+   "cwd": "/opt/bi-leads",
+   "ver": "docker compose exec web cat /etc/nginx/conf.d/default.conf",
+   "correr": "docker compose exec -T web cat /etc/nginx/conf.d/default.conf | sed -n '1,13p'"
+  }
+ ]
+}

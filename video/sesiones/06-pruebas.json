@@ -1,0 +1,10 @@
+{
+ "titulo": "Pruebas de la API",
+ "pasos": [
+  {
+   "host": "pc",
+   "ver": "cd api && mvn test | grep -E 'Tests run|BUILD'",
+   "correr": "cd api && mvn test 2>&1 | grep -E 'Tests run:|BUILD' | sed 's/^\\[INFO\\] //; s/^\\[WARNING\\] //'"
+  }
+ ]
+}

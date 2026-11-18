@@ -1,0 +1,15 @@
+{
+ "titulo": "Comprobar el DNS",
+ "pasos": [
+  {
+   "host": "pc",
+   "ver": "nslookup bi.dbltech.tech ns1.dns-parking.com",
+   "correr": "nslookup bi.dbltech.tech ns1.dns-parking.com 2>&1 | sed 's/Servidor:/Server:/; s/Nombre:/Name:/; s/Direcci.n:/Address:/' | grep -v '^$'"
+  },
+  {
+   "host": "pc",
+   "ver": "nslookup -type=AAAA bi.dbltech.tech ns1.dns-parking.com",
+   "correr": "nslookup -type=AAAA bi.dbltech.tech ns1.dns-parking.com 2>&1 | sed 's/Servidor:/Server:/; s/Nombre:/Name:/; s/Direcci.n:/Address:/' | grep -v '^$'"
+  }
+ ]
+}
