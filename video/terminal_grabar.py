@@ -6,7 +6,6 @@ Cada paso: {"ver": "comando que se muestra", "correr": "comando real (si difiere
             "cwd": "/opt/bi-leads", "prompt": "...", "solo_ver": false, "puede_fallar": false}
 """
 import json
-import os
 import shlex
 import subprocess
 import sys
@@ -31,8 +30,7 @@ def ejecutar(sesion_path: Path):
         print(f"{prompt} {paso['ver']}", flush=True)
         if paso.get("solo_ver"):
             continue
-        # Los secretos llegan por variables de entorno locales: nunca quedan en el repo ni en pantalla
-        real = paso.get("correr", paso["ver"]).replace("{BI_CLAVE}", os.environ.get("BI_CLAVE", ""))
+        real = paso.get("correr", paso["ver"])
         if host == "vps":
             args = SSH + ["bash -lc " + shlex.quote(f"cd {cwd} && {real}")]
         else:

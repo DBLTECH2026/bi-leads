@@ -1,10 +1,9 @@
 """Capturas reales del navegador para el video (Chrome sin ventana, 1920x1080).
 
-Uso:  BI_CLAVE=... python video/capturar.py [vivo] [local] [github] [api]
+Uso:  python video/capturar.py [vivo] [local] [github] [api]
 Guarda en video/crudo/navegador/. Las imágenes de página completa sirven para animar el desplazamiento.
 """
 import asyncio
-import os
 import sys
 from pathlib import Path
 
@@ -16,25 +15,37 @@ LOCAL = "http://localhost:8081"
 REPO = "https://github.com/DBLTECH2026/bi-leads"
 
 
-async def dashboard(ctx, base, prefijo, clave):
+async def dashboard(ctx, base, prefijo):
     pg = await ctx.new_page()
     await pg.goto(base + "/")
-    await pg.wait_for_selector("#clave")
-    await pg.screenshot(path=SALIDA / f"{prefijo}-00-ingreso.png")
-    await pg.fill("#clave", clave)
-    await pg.screenshot(path=SALIDA / f"{prefijo}-01-clave.png")
-    await pg.click("button[type=submit]")
     await pg.wait_for_timeout(4500)
-    await pg.screenshot(path=SALIDA / f"{prefijo}-02-resumen.png")
-    await pg.screenshot(path=SALIDA / f"{prefijo}-02-resumen-completo.png", full_page=True)
+    await pg.screenshot(path=SALIDA / f"{prefijo}-01-resumen.png")
+    await pg.screenshot(path=SALIDA / f"{prefijo}-01-resumen-completo.png", full_page=True)
+    # Filtros: menú de meses abierto
+    await pg.click(".filtro[data-filtro=meses] .filtro-boton")
+    await pg.wait_for_timeout(600)
+    await pg.screenshot(path=SALIDA / f"{prefijo}-02-menu-meses.png")
+    await pg.click(".filtro[data-filtro=meses] .filtro-boton")
+    # Filtros rápidos abiertos y luego «Mes con más ventas»
+    await pg.click(".filtro[data-filtro=rapidos] .filtro-boton")
+    await pg.wait_for_timeout(600)
+    await pg.screenshot(path=SALIDA / f"{prefijo}-03-filtros-rapidos.png")
+    await pg.click("[data-rapido=mejor-mes]")
+    await pg.wait_for_timeout(3500)
+    await pg.screenshot(path=SALIDA / f"{prefijo}-04-mejor-mes.png")
+    # Octubre (la vista del guion)
+    await pg.goto(base + "/?meses=2026-10#mes")
+    await pg.wait_for_timeout(4000)
+    await pg.screenshot(path=SALIDA / f"{prefijo}-05-octubre.png")
+    await pg.screenshot(path=SALIDA / f"{prefijo}-05-octubre-completo.png", full_page=True)
+    # Filtros combinados: salón + fin de semana
+    await pg.goto(base + "/?rubros=SAL%C3%93N&dias=6,7&compro=true#mes")
+    await pg.wait_for_timeout(4000)
+    await pg.screenshot(path=SALIDA / f"{prefijo}-06-combinados.png")
     for tab in ["capi", "clientes", "hallazgos"]:
-        await pg.click(f"button[data-tab={tab}]")
+        await pg.goto(base + f"/?meses=2026-10#{tab}")
         await pg.wait_for_timeout(3500)
-        await pg.screenshot(path=SALIDA / f"{prefijo}-03-{tab}.png")
-    await pg.click("button[data-tab=clientes]")
-    await pg.click("#f-compro button[data-v=true]")
-    await pg.wait_for_timeout(2500)
-    await pg.screenshot(path=SALIDA / f"{prefijo}-04-clientes-compraron.png")
+        await pg.screenshot(path=SALIDA / f"{prefijo}-07-{tab}.png")
     await pg.close()
 
 
@@ -71,9 +82,9 @@ async def main():
         ctx = await b.new_context(viewport={"width": 1920, "height": 1080}, device_scale_factor=1, locale="es-PE")
         partes = set(sys.argv[1:]) or {"vivo", "local", "github", "api"}
         if "vivo" in partes:
-            await dashboard(ctx, VIVO, "vivo", os.environ["BI_CLAVE"])
+            await dashboard(ctx, VIVO, "vivo")
         if "local" in partes:
-            await dashboard(ctx, LOCAL, "local", "bi2026")  # clave de desarrollo (application.properties)
+            await dashboard(ctx, LOCAL, "local")
         if "github" in partes:
             await github(ctx)
         if "api" in partes:
