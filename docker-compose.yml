@@ -25,8 +25,6 @@ services:
     restart: unless-stopped
     environment:
       MONGO_URI: mongodb://${MONGO_USUARIO}:${MONGO_CLAVE}@mongo:27017/bi_leads?authSource=admin
-      BI_CLAVE: ${BI_CLAVE}
-      BI_SECRETO: ${BI_SECRETO}
     depends_on:
       mongo:
         condition: service_healthy

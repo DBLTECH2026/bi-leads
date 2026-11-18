@@ -3,28 +3,16 @@ package pe.luislopez.bi.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import org.bson.Document;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
 
 /**
  * Aggregation pipelines escritos igual que en la pestaña "Aggregations" de MongoDB Compass.
- * Los parámetros van como marcadores ("__MES__") que se reemplazan DESPUÉS de parsear el JSON:
- * así un valor nunca puede inyectar operadores.
+ * "__FILTRO__" se reemplaza por el $match de los filtros DESPUÉS de parsear el JSON:
+ * así un valor que llega por la URL nunca puede inyectar operadores.
  */
 public final class Pipelines {
-    private static final Pattern MES = Pattern.compile("^[0-9]{4}-(0[1-9]|1[0-2])$");
-
     private Pipelines() {
-    }
-
-    public static String validarMes(String mes) {
-        if (mes == null || !MES.matcher(mes).matches()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "mes debe tener la forma AAAA-MM");
-        }
-        return mes;
     }
 
     /** Parsea un arreglo JSON de etapas y reemplaza los marcadores por sus valores. */
@@ -56,7 +44,7 @@ public final class Pipelines {
 
     public static final String EMBUDO = """
             [
-              { $match: { mes: "__MES__" } },
+              { $match: "__FILTRO__" },
               { $group: {
                   _id: null,
                   llegaron:  { $sum: 1 },
@@ -68,8 +56,10 @@ public final class Pipelines {
               } }
             ]""";
 
-    public static final String CAPI_POR_MES = """
+    /** Leads por mes (sirve para CAPI y para «ventas por mes»). */
+    public static final String LEADS_POR_MES = """
             [
+              { $match: "__FILTRO__" },
               { $group: {
                   _id: "$mes",
                   periodo:     { $first: "$capi.periodo" },
@@ -82,9 +72,16 @@ public final class Pipelines {
               { $sort: { _id: 1 } }
             ]""";
 
-    public static final String ANUNCIOS_Y_PLATAFORMAS = """
+    public static final String MEDIANA_DIAS = """
             [
-              { $match: { mes: "__MES__" } },
+              { $match: "__FILTRO__" },
+              { $match: { diasHastaCompra: { $ne: null } } },
+              { $group: { _id: null, mediana: { $median: { input: "$diasHastaCompra", method: "approximate" } } } }
+            ]""";
+
+    public static final String ANUNCIOS_Y_ORIGENES = """
+            [
+              { $match: "__FILTRO__" },
               { $facet: {
                   anuncios: [
                     { $match: { "origen.tipo": "anuncio", "origen.anuncio": { $ne: null } } },
@@ -93,12 +90,9 @@ public final class Pipelines {
                     { $sort: { compraron: -1, leads: -1 } },
                     { $limit: 8 }
                   ],
-                  plataformas: [
-                    { $group: {
-                        _id: { $cond: [ { $eq: [ "$origen.tipo", "directo" ] }, "directo",
-                                        { $ifNull: [ "$origen.plataforma", "otro anuncio" ] } ] },
-                        leads: { $sum: 1 },
-                        compraron: { $sum: { $cond: [ "$compro", 1, 0 ] } } } },
+                  origenes: [
+                    { $group: { _id: "$origen.canal", leads: { $sum: 1 },
+                                compraron: { $sum: { $cond: [ "$compro", 1, 0 ] } } } },
                     { $sort: { leads: -1 } }
                   ]
               } }
@@ -106,7 +100,7 @@ public final class Pipelines {
 
     public static final String ASESORAS = """
             [
-              { $match: { mes: "__MES__" } },
+              { $match: "__FILTRO__" },
               { $group: { _id: "$asesora", leads: { $sum: 1 },
                           calificados: { $sum: { $cond: [ "$calificado", 1, 0 ] } },
                           compraron:   { $sum: { $cond: [ "$compro", 1, 0 ] } } } },
@@ -132,14 +126,14 @@ public final class Pipelines {
 
     public static final String UNIDADES = """
             [
-              { $match: { mes: "__MES__" } },
+              { $match: "__FILTRO__" },
               { $unwind: "$items" },
               { $group: { _id: null, unidades: { $sum: "$items.cantidad" } } }
             ]""";
 
     public static final String VENTAS_POR_DIA = """
             [
-              { $match: { mes: "__MES__" } },
+              { $match: "__FILTRO__" },
               { $group: { _id: { diaNum: "$diaNum", dia: "$dia" },
                           ventas: { $sum: 1 },
                           unidades: { $sum: { $sum: "$items.cantidad" } } } },
@@ -148,13 +142,14 @@ public final class Pipelines {
 
     public static final String MAPA_DE_CALOR = """
             [
-              { $match: { mes: "__MES__", hora: { $ne: null } } },
+              { $match: "__FILTRO__" },
+              { $match: { hora: { $ne: null } } },
               { $group: { _id: { diaNum: "$diaNum", hora: "$hora" }, ventas: { $sum: 1 } } }
             ]""";
 
     public static final String CATEGORIAS = """
             [
-              { $match: { mes: "__MES__" } },
+              { $match: "__FILTRO__" },
               { $unwind: "$items" },
               { $group: { _id: "$items.categoria",
                           ventas: { $addToSet: "$_id" },
@@ -165,7 +160,8 @@ public final class Pipelines {
 
     public static final String VENTAS_POR_MES = """
             [
-              { $group: { _id: "$mes", ventas: { $sum: 1 } } },
+              { $match: "__FILTRO__" },
+              { $group: { _id: "$mes", ventas: { $sum: 1 }, unidades: { $sum: { $sum: "$items.cantidad" } } } },
               { $sort: { _id: 1 } }
             ]""";
 }

@@ -9,7 +9,7 @@ preguntas:
 - ¿Qué día y a qué hora compran más?
 - ¿Desde que se activó **Meta CAPI** (30-ago-2026) llegan clientes de mejor calidad?
 
-En vivo: **https://bi.dbltech.tech** (pide una clave).
+En vivo: **https://bi.dbltech.tech**
 
 > Los datos reales **no están en este repositorio**. Aquí solo hay datos de ejemplo inventados en `datos/ejemplo/`.
 > El dashboard no muestra montos, teléfonos, DNI ni el nombre de la empresa, y las asesoras aparecen con seudónimo.
@@ -37,19 +37,31 @@ En vivo: **https://bi.dbltech.tech** (pide una clave).
 | `leads` | un cliente que escribió por WhatsApp | `nombre`, `llegada`, `mes`, `dia`, `hora`, `origen{tipo,plataforma,anuncio}`, `capi{periodo}`, `etapa`, `calificado`, `asesora`, `compro`, `diasHastaCompra` |
 | `ventas` | un comprobante del ERP | `fecha`, `mes`, `dia`, `hora`, `tipo`, `cliente`, `leadId`, `categorias`, `items[{producto,categoria,cantidad}]` |
 
-### API
+### API (pública, sin clave)
 
-| Método | Ruta | Qué devuelve |
-|---|---|---|
-| POST | `/api/ingresar` | token (clave del dashboard) |
-| GET | `/api/salud` | versión de MongoDB y número de documentos (libre) |
-| GET | `/api/resumen?mes=2026-10` | leads, de anuncios, listos, compraron, ventas por 100 leads |
-| GET | `/api/embudo` | escribieron → interés → listos → compraron |
-| GET | `/api/compras/dias` · `/api/compras/calor` · `/api/compras/categorias` | cuándo y qué compran |
-| GET | `/api/capi/comparativo` | jul–ago (antes) contra sep–oct (con CAPI) |
-| GET | `/api/anuncios/top` · `/api/asesoras` | origen de los leads y desempeño |
-| GET | `/api/clientes?compro=true&q=ana&pagina=1` | tabla de clientes (usa `$lookup` con ventas) |
-| GET | `/api/hallazgos` | frases automáticas con los números del mes |
+Todos los endpoints reciben los **mismos filtros múltiples** por la URL; Spring los arma en un objeto `Filtro`
+y `Filtros.java` los traduce a un `$match` de MongoDB:
+
+`?meses=2026-09,2026-10&rubros=SALÓN&origenes=facebook,instagram&asesoras=Asesora A&dias=6,7&compro=true`
+
+Sin filtros = de julio a octubre de 2026 completo.
+
+| Ruta | Qué devuelve |
+|---|---|
+| `/api/opciones` | valores posibles de cada filtro, con su cantidad |
+| `/api/resumen` | leads, de anuncios, listos, compraron, ventas por 100 leads |
+| `/api/destacados` | **filtros inteligentes**: mes, día y hora con más ventas, rubro top, mejor origen y mejor asesora, cada uno con el filtro que lo aísla |
+| `/api/compras/meses` · `/dias` · `/calor` · `/categorias` | cuándo y qué compran |
+| `/api/embudo` | escribieron → interés → listos → compraron |
+| `/api/capi/comparativo` | jul–ago (antes) contra sep–oct (con CAPI); usa todos los filtros menos los meses |
+| `/api/anuncios/top` · `/api/asesoras` | origen de los leads y desempeño |
+| `/api/clientes?q=ana&pagina=1` | tabla de clientes (usa `$lookup` con ventas) |
+| `/api/hallazgos` | frases automáticas con los números filtrados |
+| `/api/salud` | versión de MongoDB y número de documentos |
+
+En el dashboard los filtros se combinan desde la barra superior, desde los **filtros rápidos**
+(«Mes con más ventas», «Con CAPI», «Compraron salón», «Fin de semana»…), tocando un destacado, una barra
+de un gráfico o una fila de una tabla. El filtro queda en la URL, así que la vista se puede compartir.
 
 ## Correrlo en tu PC
 
@@ -60,7 +72,7 @@ Necesitas Java 21+, Maven, Python 3.11+ y MongoDB 8 en `127.0.0.1:27017`.
 pip install -r etl/requirements.txt
 python -m etl.cargar --db bi_leads --ejemplo
 
-# 2. Servidor (puerto 8080). La clave local por defecto es bi2026.
+# 2. Servidor (puerto 8080)
 cd api && mvn spring-boot:run
 
 # 3. Cliente (puerto 8081), en otra terminal
@@ -75,7 +87,7 @@ Abre http://localhost:8081. Las pruebas: `python -m pytest etl` y `cd api && mvn
 ```bash
 git clone https://github.com/DBLTECH2026/bi-leads.git /opt/bi-leads
 cd /opt/bi-leads
-cp .env.ejemplo .env            # y cambiar las claves
+cp .env.ejemplo .env            # y cambiar la clave de MongoDB
 docker compose up -d --build    # mongo + api + web
 ./scripts/cargar-datos.sh       # mongoimport de datos/*.json (copiados por scp)
 cp caddy/bi-leads.caddy /opt/caddy-extra/ && docker exec sirac-caddy-1 caddy reload --config /etc/caddy/Caddyfile

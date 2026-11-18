@@ -1,9 +1,11 @@
 // Luis López · BI — cliente. Consume la API Spring Boot con fetch y dibuja el dashboard.
+// Los filtros son múltiples, se combinan entre sí y viajan en la URL (?meses=…&rubros=…).
 (() => {
   "use strict";
 
   const API = window.BI_CONFIG.API_BASE;
   const $ = (s) => document.querySelector(s);
+  const $$ = (s) => [...document.querySelectorAll(s)];
   const NUM = new Intl.NumberFormat("es-PE");
   const DEC = new Intl.NumberFormat("es-PE", { maximumFractionDigits: 1 });
   const FECHA = new Intl.DateTimeFormat("es-PE", {
@@ -23,42 +25,153 @@
   const ORIGENES = {
     facebook: ["Anuncio Facebook", "megaphone"], instagram: ["Anuncio Instagram", "camera"],
     whatsapp: ["Anuncio WhatsApp", "message-circle"], directo: ["Escribió directo", "user-round"],
-    "otro anuncio": ["Otro anuncio", "globe"], anuncio: ["Anuncio", "megaphone"],
+    "otro anuncio": ["Otro anuncio", "globe"], "sin chat": ["Sin chat (tienda)", "store"],
   };
+  const CLAVES = ["meses", "rubros", "origenes", "asesoras", "dias"];
+  const NOMBRE_FILTRO = { meses: "Mes", rubros: "Rubro", origenes: "Origen", asesoras: "Asesora", dias: "Día", compro: "Compró" };
 
-  const estado = { token: sessionStorage.getItem("bi_leads_token"), mes: "2026-10", pestana: "mes",
-    clientes: { pagina: 1, compro: "", q: "" }, capiCargado: false };
+  // Filtros rápidos («inteligentes»): combinaciones listas; el primero se calcula con los datos
+  const RAPIDOS = [
+    { id: "mejor-mes", etiqueta: "Mes con más ventas", icono: "trophy" },
+    { id: "capi", etiqueta: "Con CAPI (sep–oct)", icono: "trending-up", f: { meses: ["2026-09", "2026-10"] } },
+    { id: "antes", etiqueta: "Antes de CAPI (jul–ago)", icono: "history", f: { meses: ["2026-07", "2026-08"] } },
+    { id: "anuncios", etiqueta: "Solo anuncios", icono: "megaphone", f: { origenes: ["facebook", "instagram", "whatsapp", "otro anuncio"] } },
+    { id: "directo", etiqueta: "Escribieron directo", icono: "user-round", f: { origenes: ["directo"] } },
+    { id: "salon", etiqueta: "Compraron salón", icono: "armchair", f: { rubros: ["SALÓN"], compro: true } },
+    { id: "barberia", etiqueta: "Compraron barbería", icono: "scissors", f: { rubros: ["BARBERÍA"], compro: true } },
+    { id: "finde", etiqueta: "Fin de semana", icono: "sun", f: { dias: [6, 7] } },
+    { id: "compraron", etiqueta: "Solo los que compraron", icono: "shopping-bag", f: { compro: true } },
+  ];
+
+  const vacio = () => ({ meses: [], rubros: [], origenes: [], asesoras: [], dias: [], compro: null });
+  const estado = { f: vacio(), pestana: "mes", clientes: { pagina: 1, q: "" }, opciones: null };
   const graficos = {};
 
   const esc = (t) => String(t ?? "").replace(/[&<>"']/g, (c) =>
     ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const iconos = () => lucide.createIcons();
 
-  // ---------- API ----------
+  // ---------- Filtros: estado, URL y API ----------
+  function qs(f = estado.f, extra = {}) {
+    const p = new URLSearchParams();
+    CLAVES.forEach((k) => { if (f[k].length) p.set(k, f[k].join(",")); });
+    if (f.compro !== null) p.set("compro", f.compro);
+    Object.entries(extra).forEach(([k, v]) => { if (v !== "" && v != null) p.set(k, v); });
+    const s = p.toString();
+    return s ? "?" + s : "";
+  }
+
+  function leerUrl() {
+    const p = new URLSearchParams(location.search);
+    CLAVES.forEach((k) => {
+      const v = p.get(k);
+      estado.f[k] = v ? v.split(",").filter(Boolean).map((x) => (k === "dias" ? Number(x) : x)) : [];
+    });
+    estado.f.compro = p.has("compro") ? p.get("compro") === "true" : null;
+  }
+
+  function escribirUrl() {
+    history.replaceState(null, "", location.pathname + qs() + "#" + estado.pestana);
+  }
+
   async function api(ruta) {
-    const r = await fetch(API + ruta, { headers: { Authorization: "Bearer " + estado.token } });
-    if (r.status === 401) { salir(); throw new Error("sin acceso"); }
+    const r = await fetch(API + ruta);
     if (!r.ok) throw new Error(ruta + " -> " + r.status);
     return r.json();
   }
 
-  async function ingresar(ev) {
-    ev.preventDefault();
-    const r = await fetch(API + "/api/ingresar", {
-      method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ clave: $("#clave").value }),
-    });
-    if (!r.ok) { $("#ingreso-error").hidden = false; return; }
-    estado.token = (await r.json()).token;
-    sessionStorage.setItem("bi_leads_token", estado.token);
-    iniciar();
+  function cantidadFiltros(f = estado.f) {
+    return CLAVES.reduce((n, k) => n + f[k].length, 0) + (f.compro !== null ? 1 : 0);
   }
 
-  function salir() {
-    sessionStorage.removeItem("bi_leads_token");
-    estado.token = null;
-    $("#app").hidden = true;
-    $("#ingreso").hidden = false;
+  function etiqueta(clave, valor) {
+    if (clave === "meses") return MESES[valor] || valor;
+    if (clave === "dias") return DIAS_LARGOS[valor - 1];
+    if (clave === "origenes") return (ORIGENES[valor] || [valor])[0];
+    if (clave === "compro") return valor ? "Compraron" : "No compraron";
+    return valor;
+  }
+
+  function textoFiltros(f = estado.f, sinMeses = false) {
+    const partes = [];
+    CLAVES.forEach((k) => {
+      if (sinMeses && k === "meses") return;
+      if (f[k].length) partes.push(`${NOMBRE_FILTRO[k]}: ${f[k].map((v) => etiqueta(k, v)).join(", ")}`);
+    });
+    if (f.compro !== null) partes.push(etiqueta("compro", f.compro));
+    return partes.join(" · ");
+  }
+
+  /** Cambia los filtros y recarga. `reemplazar` empieza de cero (filtros rápidos). */
+  function aplicar(nuevo, reemplazar = false) {
+    const base = reemplazar ? vacio() : { ...estado.f };
+    Object.entries(nuevo).forEach(([k, v]) => { base[k] = Array.isArray(v) ? [...v] : v; });
+    estado.f = base;
+    estado.clientes.pagina = 1;
+    actualizarBarra();
+    escribirUrl();
+    cargarPestana();
+  }
+
+  function alternar(clave, valor) {
+    const lista = estado.f[clave];
+    aplicar({ [clave]: lista.includes(valor) ? lista.filter((v) => v !== valor) : [...lista, valor] });
+  }
+
+  // ---------- Barra de filtros ----------
+  function opcionesDe(clave) {
+    const o = estado.opciones;
+    if (!o) return [];
+    if (clave === "dias") return o.dias.map((d) => ({ valor: Number(d.valor), etiqueta: d.etiqueta, cantidad: d.cantidad, unidad: "ventas" }));
+    const unidad = clave === "rubros" ? "unid." : "leads";
+    return o[clave].map((x) => ({ valor: x.valor, etiqueta: clave === "origenes" ? etiqueta("origenes", x.valor) : x.etiqueta, cantidad: x.cantidad, unidad }));
+  }
+
+  function pintarMenu(div) {
+    const clave = div.dataset.filtro;
+    const menu = div.querySelector(".menu");
+    if (clave === "rapidos") {
+      menu.innerHTML = RAPIDOS.map((r) => `<button class="opcion-rapida" data-rapido="${r.id}">
+        <i data-lucide="${r.icono}"></i>${esc(r.etiqueta)}</button>`).join("");
+    } else {
+      const sel = estado.f[clave];
+      menu.innerHTML = opcionesDe(clave).map((o) => `<label class="opcion">
+          <input type="checkbox" value="${esc(o.valor)}" ${sel.includes(o.valor) ? "checked" : ""}>
+          <span>${esc(o.etiqueta)}</span><small>${NUM.format(o.cantidad)} ${o.unidad}</small></label>`).join("") +
+        `<button class="menu-todos" data-todos="${clave}">Ver todos</button>`;
+    }
+    iconos();
+  }
+
+  function actualizarBarra() {
+    $$(".filtro[data-filtro]").forEach((div) => {
+      const clave = div.dataset.filtro;
+      if (clave === "rapidos") return;
+      const n = estado.f[clave].length;
+      div.querySelector(".cuenta").textContent = n ? n : "";
+      div.classList.toggle("activo", n > 0);
+    });
+    $$("#f-compro button").forEach((b) => b.classList.toggle("activa", b.dataset.v === (estado.f.compro === null ? "" : String(estado.f.compro))));
+    const n = cantidadFiltros();
+    $("#limpiar").hidden = n === 0;
+    const chips = [];
+    CLAVES.forEach((k) => estado.f[k].forEach((v) => chips.push(
+      `<button class="chip-filtro" data-quitar="${k}" data-valor="${esc(v)}">${NOMBRE_FILTRO[k]}: <b>${esc(etiqueta(k, v))}</b><i data-lucide="x"></i></button>`)));
+    if (estado.f.compro !== null) chips.push(`<button class="chip-filtro" data-quitar="compro"><b>${etiqueta("compro", estado.f.compro)}</b><i data-lucide="x"></i></button>`);
+    $("#activos").innerHTML = chips.join("");
+    $("#activos").hidden = chips.length === 0;
+    iconos();
+  }
+
+  async function aplicarRapido(id) {
+    const r = RAPIDOS.find((x) => x.id === id);
+    if (r.id === "mejor-mes") {
+      const d = await api("/api/destacados" + qs({ ...estado.f, meses: [] }));
+      const mes = d.find((x) => x.clave === "mes");
+      if (mes) aplicar(mes.filtro);
+      return;
+    }
+    aplicar(r.f, true);
   }
 
   // ---------- Gráficos (Chart.js) ----------
@@ -67,8 +180,7 @@
   Chart.defaults.color = COLOR.texto;
   Chart.defaults.plugins.legend.display = false;
   Object.assign(Chart.defaults.plugins.tooltip, {
-    backgroundColor: "#0a0a0a", padding: 10, cornerRadius: 8, displayColors: false,
-    titleFont: { weight: "600" },
+    backgroundColor: "#0a0a0a", padding: 10, cornerRadius: 8, displayColors: false, titleFont: { weight: "600" },
   });
 
   function grafico(id, config) {
@@ -84,7 +196,13 @@
     },
   });
 
-  // Etiqueta solo en la barra indicada (rótulos selectivos, no un número en cada barra)
+  // Clic en una barra = filtrar por ese valor (y la mano indica que se puede)
+  const alClic = (clave, valores) => ({
+    onClick: (_, el) => { if (el.length) alternar(clave, valores[el[0].index]); },
+    onHover: (e, el) => { e.native.target.style.cursor = el.length ? "pointer" : "default"; },
+  });
+
+  // Etiqueta solo en las barras indicadas (rótulos selectivos, no un número en cada barra)
   const rotulo = (indices, texto) => ({
     id: "rotulo",
     afterDatasetsDraw(chart) {
@@ -121,21 +239,32 @@
     },
   };
 
-  // ---------- Resumen del mes ----------
+  const barrasVerticales = (id, etiquetas, valores, extra = {}) => grafico(id, {
+    type: "bar",
+    data: { labels: etiquetas, datasets: [{ data: valores, backgroundColor: extra.colores || COLOR.verde,
+      borderRadius: { topLeft: 4, topRight: 4 }, borderSkipped: false, maxBarThickness: extra.grosor || 34 }] },
+    options: { maintainAspectRatio: false, scales: ejes(false), layout: { padding: { top: 18 } },
+      plugins: { tooltip: { callbacks: extra.tooltip || {} } }, ...(extra.clic || {}) },
+    plugins: extra.plugins || [],
+  });
+
+  // ---------- Resumen ----------
   async function cargarMes() {
-    const m = estado.mes;
-    const q = "?mes=" + m;
-    $("#titulo-mes").textContent = "Resumen de " + MESES[m];
-    const [res, emb, dias, calor, cats, anu, ases] = await Promise.all([
-      api("/api/resumen" + q), api("/api/embudo" + q), api("/api/compras/dias" + q), api("/api/compras/calor" + q),
-      api("/api/compras/categorias" + q), api("/api/anuncios/top" + q), api("/api/asesoras" + q),
+    const q = qs();
+    const [res, dest, meses, emb, dias, calor, cats, anu, ases] = await Promise.all([
+      api("/api/resumen" + q), api("/api/destacados" + q), api("/api/compras/meses" + q), api("/api/embudo" + q),
+      api("/api/compras/dias" + q), api("/api/compras/calor" + q), api("/api/compras/categorias" + q),
+      api("/api/anuncios/top" + q), api("/api/asesoras" + q),
     ]);
+    $("#titulo-mes").textContent = "Resumen · " + res.periodo;
     pintarKpis(res);
+    pintarDestacados(dest);
+    pintarMeses(meses);
     pintarEmbudo(emb);
     pintarCategorias(cats);
     pintarDias(dias);
     pintarCalor(calor);
-    pintarOrigen(anu.plataformas);
+    pintarOrigen(anu.origenes);
     pintarAnuncios(anu.anuncios);
     pintarAsesoras(ases);
     iconos();
@@ -152,6 +281,32 @@
     $("#kpis").innerHTML = k.map(([e, v, p, i]) => `
       <div class="kpi"><div class="kpi-etiqueta">${e}</div><div class="kpi-valor">${v}</div>
       <div class="kpi-pie">${p}</div><span class="kpi-icono"><i data-lucide="${i}"></i></span></div>`).join("");
+  }
+
+  function pintarDestacados(lista) {
+    $("#destacados").innerHTML = lista.length ? lista.map((d, i) => {
+      const filtra = Object.keys(d.filtro || {}).length > 0;
+      return `<button class="destacado${filtra ? "" : " fijo"}" data-destacado="${i}" ${filtra ? "" : "disabled"}>
+        <span class="destacado-icono"><i data-lucide="${esc(d.icono)}"></i></span>
+        <span class="destacado-titulo">${esc(d.titulo)}</span>
+        <span class="destacado-valor">${esc(d.valor)}</span>
+        <span class="destacado-detalle">${esc(d.detalle)}</span></button>`;
+    }).join("") : `<p class="suave">Sin datos para estos filtros.</p>`;
+    estado.destacados = lista;
+  }
+
+  function pintarMeses(meses) {
+    const valores = meses.map((m) => m.ventas);
+    const mejor = valores.indexOf(Math.max(...valores, 0));
+    barrasVerticales("g-meses", meses.map((m) => MES_CORTO[m.mes] || m.mes), valores, {
+      grosor: 46,
+      tooltip: {
+        title: (c) => MESES[meses[c[0].dataIndex].mes],
+        label: (c) => `${NUM.format(meses[c.dataIndex].ventas)} comprobantes · ${DEC.format(meses[c.dataIndex].ventasPor100)} por 100 leads`,
+      },
+      clic: alClic("meses", meses.map((m) => m.mes)),
+      plugins: mejor >= 0 && valores[mejor] > 0 ? [rotulo([mejor], () => "Más ventas")] : [],
+    });
   }
 
   function pintarEmbudo(etapas) {
@@ -174,7 +329,7 @@
           borderRadius: { topRight: 4, bottomRight: 4 }, borderSkipped: false, maxBarThickness: 22 }],
       },
       options: {
-        indexAxis: "y", maintainAspectRatio: false, scales: ejes(true),
+        indexAxis: "y", maintainAspectRatio: false, scales: ejes(true), ...alClic("rubros", cats.map((c) => c.categoria)),
         plugins: { tooltip: { callbacks: {
           label: (c) => `${NUM.format(cats[c.dataIndex].unidades)} unidades · ${DEC.format(cats[c.dataIndex].pctUnidades)} %`,
           afterLabel: (c) => `en ${NUM.format(cats[c.dataIndex].ventas)} comprobantes`,
@@ -185,20 +340,12 @@
 
   function pintarDias(d) {
     const ganador = d.ganador ? d.ganador.diaNum - 1 : -1;
-    grafico("g-dias", {
-      type: "bar",
-      data: {
-        labels: d.dias.map((x) => DIAS[x.diaNum - 1]),
-        datasets: [{ data: d.dias.map((x) => x.ventas), backgroundColor: COLOR.verde,
-          borderRadius: { topLeft: 4, topRight: 4 }, borderSkipped: false, maxBarThickness: 34 }],
+    barrasVerticales("g-dias", d.dias.map((x) => DIAS[x.diaNum - 1]), d.dias.map((x) => x.ventas), {
+      tooltip: {
+        title: (c) => DIAS_LARGOS[c[0].dataIndex],
+        label: (c) => `${NUM.format(d.dias[c.dataIndex].ventas)} comprobantes · ${NUM.format(d.dias[c.dataIndex].unidades)} unidades`,
       },
-      options: {
-        maintainAspectRatio: false, scales: ejes(false), layout: { padding: { top: 18 } },
-        plugins: { tooltip: { callbacks: {
-          title: (c) => DIAS_LARGOS[c[0].dataIndex],
-          label: (c) => `${NUM.format(d.dias[c.dataIndex].ventas)} comprobantes · ${NUM.format(d.dias[c.dataIndex].unidades)} unidades`,
-        } } },
-      },
+      clic: alClic("dias", d.dias.map((x) => x.diaNum)),
       plugins: ganador >= 0 ? [rotulo([ganador], () => "Más compras")] : [],
     });
   }
@@ -206,13 +353,12 @@
   function pintarCalor(celdas) {
     const mapa = new Map(celdas.map((c) => [c.diaNum + "-" + c.hora, c.ventas]));
     const max = Math.max(1, ...celdas.map((c) => c.ventas));
-    let html = '<span></span>' + HORAS.map((h) => `<span class="eje">${h}</span>`).join("");
+    let html = "<span></span>" + HORAS.map((h) => `<span class="eje">${h}</span>`).join("");
     for (let d = 1; d <= 7; d++) {
       html += `<span class="eje eje-dia">${DIAS[d - 1]}</span>`;
       for (const h of HORAS) {
         const n = mapa.get(d + "-" + h) || 0;
-        const fondo = n ? escalaVerde(n / max) : "";
-        html += `<span class="celda" style="${fondo ? "background:" + fondo : ""}"
+        html += `<span class="celda" style="${n ? "background:" + escalaVerde(n / max) : ""}"
           data-tip="${DIAS_LARGOS[d - 1]} ${h}:00–${h + 1}:00 · ${n} ${n === 1 ? "venta" : "ventas"}"></span>`;
       }
     }
@@ -228,36 +374,44 @@
     return `rgb(${PASOS[i].map((v, k) => Math.round(v + (PASOS[i + 1][k] - v) * f)).join(",")})`;
   }
 
-  function pintarOrigen(plat) {
-    const max = Math.max(1, ...plat.map((p) => p.leads));
+  function filaFiltrable(clave, valor) {
+    return estado.f[clave].includes(valor) ? "fila-filtro seleccionada" : "fila-filtro";
+  }
+
+  function pintarOrigen(lista) {
+    const max = Math.max(1, ...lista.map((p) => p.leads));
     $("#t-origen").innerHTML = `<tr><td></td><td class="num apoyo">leads</td><td class="num apoyo">compra</td></tr>` +
-      plat.map((p) => {
+      lista.map((p) => {
         const [nombre, icono] = ORIGENES[p.nombre] || [p.nombre, "globe"];
-        return `<tr><td><span class="con-icono"><i data-lucide="${icono}"></i>${esc(nombre)}</span>
+        return `<tr class="${filaFiltrable("origenes", p.nombre)}" data-filtrar="origenes" data-valor="${esc(p.nombre)}">
+          <td><span class="con-icono"><i data-lucide="${icono}"></i>${esc(nombre)}</span>
           <div class="pista"><i style="width:${(p.leads / max) * 100}%"></i></div></td>
           <td class="num">${NUM.format(p.leads)}</td><td class="num">${DEC.format(p.conversion)} %</td></tr>`;
       }).join("");
   }
 
   function pintarAnuncios(anuncios) {
-    $("#t-anuncios").innerHTML = `<tr><td></td><td class="num apoyo">compraron</td></tr>` +
+    $("#t-anuncios").innerHTML = anuncios.length ? `<tr><td></td><td class="num apoyo">compraron</td></tr>` +
       anuncios.map((a) => `<tr><td class="texto-largo" title="${esc(a.nombre)}">${esc(a.nombre)}</td>
-        <td class="num">${NUM.format(a.compraron)} <span class="apoyo">/ ${NUM.format(a.leads)}</span></td></tr>`).join("");
+        <td class="num">${NUM.format(a.compraron)} <span class="apoyo">/ ${NUM.format(a.leads)}</span></td></tr>`).join("")
+      : `<tr><td class="apoyo">Sin anuncios con estos filtros</td></tr>`;
   }
 
   function pintarAsesoras(lista) {
     $("#t-asesoras").innerHTML = `<tr><td></td><td class="num apoyo">leads</td><td class="num apoyo">compraron</td><td class="num apoyo">%</td></tr>` +
-      lista.map((a) => `<tr><td><span class="con-icono"><i data-lucide="user-round"></i>${esc(a.asesora)}</span></td>
+      lista.map((a) => `<tr class="${filaFiltrable("asesoras", a.asesora)}" data-filtrar="asesoras" data-valor="${esc(a.asesora)}">
+        <td><span class="con-icono"><i data-lucide="user-round"></i>${esc(a.asesora)}</span></td>
         <td class="num">${NUM.format(a.leads)}</td><td class="num">${NUM.format(a.compraron)}</td>
         <td class="num">${DEC.format(a.conversion)}</td></tr>`).join("");
   }
 
   // ---------- CAPI ----------
   async function cargarCapi() {
-    const c = await api("/api/capi/comparativo");
+    const c = await api("/api/capi/comparativo" + qs());
     const signo = c.variacionPct >= 0 ? "+" : "";
     $("#capi-variacion").textContent = signo + DEC.format(c.variacionPct) + " %";
-    $("#capi-nota").textContent = c.nota;
+    const otros = textoFiltros(estado.f, true);
+    $("#capi-nota").textContent = c.nota + (otros ? " Filtros aplicados: " + otros + "." : "");
     $("#capi-periodos").innerHTML = [["Antes de CAPI · jul–ago", c.antes, "antes"], ["Con CAPI · sep–oct", c.despues, "despues"]]
       .map(([t, p, cl]) => `<div class="periodo"><div class="periodo-titulo"><i class="cuadro ${cl}"></i>${t}</div>
         <div class="periodo-datos"><div><b>${NUM.format(p.leads)}</b><span>leads</span></div>
@@ -266,16 +420,11 @@
 
     const etiquetas = c.meses.map((m) => MES_CORTO[m.mes] || m.mes);
     const colores = c.meses.map((m) => (m.periodo === "antes" ? COLOR.antes : COLOR.despues));
-    const barras = (id, valores, formato) => grafico(id, {
-      type: "bar",
-      data: { labels: etiquetas, datasets: [{ data: valores, backgroundColor: colores,
-        borderRadius: { topLeft: 4, topRight: 4 }, borderSkipped: false, maxBarThickness: 40 }] },
-      options: {
-        maintainAspectRatio: false, scales: ejes(false), layout: { padding: { top: 18 } },
-        plugins: { tooltip: { callbacks: {
-          title: (x) => MESES[c.meses[x[0].dataIndex].mes] + (c.meses[x[0].dataIndex].periodo === "antes" ? " · antes de CAPI" : " · con CAPI"),
-          label: (x) => formato(valores[x.dataIndex]),
-        } } },
+    const barras = (id, valores, formato) => barrasVerticales(id, etiquetas, valores, {
+      grosor: 40, colores,
+      tooltip: {
+        title: (x) => MESES[c.meses[x[0].dataIndex].mes] + (c.meses[x[0].dataIndex].periodo === "antes" ? " · antes de CAPI" : " · con CAPI"),
+        label: (x) => formato(valores[x.dataIndex]),
       },
       plugins: [lineaCapi, rotulo([0, valores.length - 1], (i) => formato(valores[i]))],
     });
@@ -293,17 +442,13 @@
         <td class="der">${NUM.format(m.ventas)}</td><td class="der">${DEC.format(m.ventasPor100)}</td>
         <td class="der">${m.medianaDias == null ? "—" : DEC.format(m.medianaDias)}</td>
         <td class="der">${NUM.format(m.leadsCapi)}</td></tr>`).join("");
-    estado.capiCargado = true;
     iconos();
   }
 
   // ---------- Clientes ----------
   async function cargarClientes() {
-    const f = estado.clientes;
-    const p = new URLSearchParams({ mes: estado.mes, pagina: f.pagina });
-    if (f.compro) p.set("compro", f.compro);
-    if (f.q) p.set("q", f.q);
-    const r = await api("/api/clientes?" + p);
+    const c = estado.clientes;
+    const r = await api("/api/clientes" + qs(estado.f, { q: c.q, pagina: c.pagina }));
     const paginas = Math.max(1, Math.ceil(r.total / r.porPagina));
     $("#total-clientes").textContent = NUM.format(r.total) + " clientes";
     $("#pag-num").textContent = `${r.pagina} de ${NUM.format(paginas)}`;
@@ -313,25 +458,26 @@
     $("#t-clientes").hidden = r.filas.length === 0;
     $("#t-clientes").innerHTML = `<tr><th>Cliente</th><th>Llegó</th><th>Origen</th><th>Anuncio</th><th>Etapa</th>
       <th>Asesora</th><th>Compró</th><th class="der">Días a compra</th></tr>` +
-      r.filas.map((c) => {
-        const [etapa, clase] = ETAPAS[c.etapa] || [c.etapa, ""];
-        const [origen, icono] = ORIGENES[c.origen] || [c.origen, "globe"];
-        const compro = c.compro
-          ? `<span class="pildora ok">Sí</span> ${(c.categoriasCompradas || []).map((x) => `<span class="etiqueta-rubro">${esc(x)}</span>`).join("")}`
+      r.filas.map((x) => {
+        const [etapa, clase] = ETAPAS[x.etapa] || [x.etapa, ""];
+        const [origen, icono] = ORIGENES[x.origen] || [x.origen, "globe"];
+        const compro = x.compro
+          ? `<span class="pildora ok">Sí</span> ${(x.categoriasCompradas || []).map((y) => `<span class="etiqueta-rubro">${esc(y)}</span>`).join("")}`
           : `<span class="pildora">No</span>`;
-        return `<tr><td><b>${esc(c.nombre)}</b></td><td>${FECHA.format(new Date(c.llegada))}</td>
+        return `<tr><td><b>${esc(x.nombre)}</b></td><td>${FECHA.format(new Date(x.llegada))}</td>
           <td><span class="con-icono"><i data-lucide="${icono}"></i>${esc(origen)}</span></td>
-          <td class="texto-largo" style="max-width:220px" title="${esc(c.anuncio || "")}">${esc(c.anuncio || "—")}</td>
-          <td><span class="pildora ${clase}">${esc(etapa)}</span></td><td>${esc(c.asesora)}</td>
-          <td>${compro}</td><td class="der">${c.diasHastaCompra ?? "—"}</td></tr>`;
+          <td class="texto-largo" style="max-width:220px" title="${esc(x.anuncio || "")}">${esc(x.anuncio || "—")}</td>
+          <td><span class="pildora ${clase}">${esc(etapa)}</span></td><td>${esc(x.asesora)}</td>
+          <td>${compro}</td><td class="der">${x.diasHastaCompra ?? "—"}</td></tr>`;
       }).join("");
     iconos();
   }
 
   // ---------- Hallazgos ----------
   async function cargarHallazgos() {
-    const h = await api("/api/hallazgos?mes=" + estado.mes);
-    $("#hallazgos-mes").textContent = "Frases armadas por la API con los números de " + MESES[estado.mes];
+    const h = await api("/api/hallazgos" + qs());
+    const filtros = textoFiltros();
+    $("#hallazgos-mes").textContent = "Frases armadas por la API con los datos" + (filtros ? " filtrados · " + filtros : " de jul–oct 2026");
     $("#hallazgos").innerHTML = h.map((x) => `<div class="hallazgo">
       <span class="hallazgo-icono"><i data-lucide="${esc(x.icono)}"></i></span><p>${esc(x.texto)}</p></div>`).join("");
     iconos();
@@ -340,30 +486,65 @@
   // ---------- Navegación ----------
   function cargarPestana() {
     const t = estado.pestana;
-    if (t === "mes") return cargarMes();
-    if (t === "capi") return estado.capiCargado ? null : cargarCapi();
-    if (t === "clientes") return cargarClientes();
-    return cargarHallazgos();
+    const carga = t === "mes" ? cargarMes() : t === "capi" ? cargarCapi() : t === "clientes" ? cargarClientes() : cargarHallazgos();
+    return carga.catch((e) => console.error(e));
   }
 
   function cambiarPestana(t) {
     estado.pestana = t;
-    document.querySelectorAll(".pestanas button").forEach((b) => b.classList.toggle("activa", b.dataset.tab === t));
-    document.querySelectorAll("[data-panel]").forEach((p) => { p.hidden = p.dataset.panel !== t; });
-    history.replaceState(null, "", "#" + t);
+    $$(".pestanas button").forEach((b) => b.classList.toggle("activa", b.dataset.tab === t));
+    $$("[data-panel]").forEach((p) => { p.hidden = p.dataset.panel !== t; });
+    escribirUrl();
     cargarPestana();
   }
 
   async function iniciar() {
-    $("#ingreso").hidden = true;
-    $("#app").hidden = false;
+    leerUrl();
     fetch(API + "/api/salud").then((r) => r.json()).then((s) => {
       $("#chip-mongo span").textContent = `MongoDB ${s.mongo} · ${NUM.format(s.leads + s.ventas)} documentos`;
     }).catch(() => {});
+    estado.opciones = await api("/api/opciones").catch(() => null);
+    actualizarBarra();
     const inicial = location.hash.slice(1);
     cambiarPestana(["mes", "capi", "clientes", "hallazgos"].includes(inicial) ? inicial : "mes");
     iconos();
   }
+
+  // ---------- Eventos ----------
+  document.addEventListener("click", (e) => {
+    const boton = e.target.closest(".filtro-boton");
+    const abierto = e.target.closest(".filtro");
+    $$(".filtro .menu").forEach((m) => {
+      const div = m.parentElement;
+      if (boton && div === boton.parentElement) {
+        if (m.hidden) pintarMenu(div);
+        m.hidden = !m.hidden;
+      } else if (div !== abierto) {
+        m.hidden = true;
+      }
+    });
+    const quitar = e.target.closest("[data-quitar]");
+    if (quitar) {
+      const k = quitar.dataset.quitar;
+      if (k === "compro") aplicar({ compro: null });
+      else alternar(k, k === "dias" ? Number(quitar.dataset.valor) : quitar.dataset.valor);
+    }
+    const todos = e.target.closest("[data-todos]");
+    if (todos) { aplicar({ [todos.dataset.todos]: [] }); todos.closest(".menu").hidden = true; }
+    const rapido = e.target.closest("[data-rapido]");
+    if (rapido) { rapido.closest(".menu").hidden = true; aplicarRapido(rapido.dataset.rapido); }
+    const dest = e.target.closest("[data-destacado]");
+    if (dest && !dest.disabled) aplicar(estado.destacados[Number(dest.dataset.destacado)].filtro);
+    const fila = e.target.closest("[data-filtrar]");
+    if (fila) alternar(fila.dataset.filtrar, fila.dataset.valor);
+  });
+
+  document.addEventListener("change", (e) => {
+    const caja = e.target.closest(".menu input[type=checkbox]");
+    if (!caja) return;
+    const clave = caja.closest(".filtro").dataset.filtro;
+    alternar(clave, clave === "dias" ? Number(caja.value) : caja.value);
+  });
 
   // Tooltip propio para el embudo y el mapa de calor
   document.addEventListener("mousemove", (e) => {
@@ -376,28 +557,18 @@
     tip.style.top = e.clientY + 16 + "px";
   });
 
-  $("#form-ingreso").addEventListener("submit", ingresar);
-  $("#salir").addEventListener("click", salir);
-  document.querySelectorAll(".pestanas button").forEach((b) => b.addEventListener("click", () => cambiarPestana(b.dataset.tab)));
-  $("#mes").addEventListener("change", (e) => {
-    estado.mes = e.target.value;
-    estado.clientes.pagina = 1;
-    if (estado.pestana !== "capi") cargarPestana();
-  });
+  $("#limpiar").addEventListener("click", () => aplicar({}, true));
+  $$("#f-compro button").forEach((b) => b.addEventListener("click", () =>
+    aplicar({ compro: b.dataset.v === "" ? null : b.dataset.v === "true" })));
+  $$(".pestanas button").forEach((b) => b.addEventListener("click", () => cambiarPestana(b.dataset.tab)));
   let espera;
   $("#buscar").addEventListener("input", (e) => {
     clearTimeout(espera);
     espera = setTimeout(() => { estado.clientes.q = e.target.value.trim(); estado.clientes.pagina = 1; cargarClientes(); }, 300);
   });
-  document.querySelectorAll("#f-compro button").forEach((b) => b.addEventListener("click", () => {
-    document.querySelectorAll("#f-compro button").forEach((x) => x.classList.toggle("activa", x === b));
-    estado.clientes.compro = b.dataset.v;
-    estado.clientes.pagina = 1;
-    cargarClientes();
-  }));
   $("#pag-ant").addEventListener("click", () => { estado.clientes.pagina--; cargarClientes(); });
   $("#pag-sig").addEventListener("click", () => { estado.clientes.pagina++; cargarClientes(); });
 
   iconos();
-  if (estado.token) iniciar(); else $("#ingreso").hidden = false;
+  iniciar();
 })();

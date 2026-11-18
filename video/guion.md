@@ -1,6 +1,6 @@
 # Guion del video · Luis López · BI
 
-Duración estimada de la voz: **7 min 16 s** (más las pausas del video).
+Duración estimada de la voz: **7 min 43 s** (más las pausas del video).
 
 ## Cómo grabar
 
@@ -13,15 +13,15 @@ Duración estimada de la voz: **7 min 16 s** (más las pausas del video).
 
 ## 01 · Presentación  (~32 s)
 
-**En pantalla:** El dashboard terminado en https://bi.dbltech.tech: ingreso con clave y recorrido rápido por las cuatro pestañas.
+**En pantalla:** El dashboard terminado en https://bi.dbltech.tech: recorrido rápido por las cuatro pestañas y los filtros.
 
 **Leer:** Hola, soy Luis López Lapa. En este video les presento mi proyecto de inteligencia de negocios, hecho con MongoDB y una arquitectura cliente-servidor. Trabajé con datos reales de una empresa peruana que vende muebles para barberías, salones y spas, donde casi todas las ventas empiezan con un mensaje de WhatsApp. Por privacidad no muestro el nombre de la empresa. Lo que van a ver es un dashboard publicado en internet que convierte esos mensajes en decisiones de negocio.
 
-## 02 · El problema de negocio  (~26 s)
+## 02 · El problema de negocio  (~27 s)
 
 **En pantalla:** Lámina con las cuatro preguntas del proyecto.
 
-**Leer:** Partimos de cuatro preguntas. Primera: cuántas personas escribieron en octubre de 2026 y cuántas compraron. Segunda: qué compraron, si fue para barbería, para salón o para spa. Tercera: qué día y a qué hora compran más. Y cuarta: desde que activamos Meta CAPI, que es la conexión que le avisa a Facebook qué clientes realmente compran, ¿nos llegan clientes de mejor calidad?
+**Leer:** Partimos de cuatro preguntas. Primera: cuántas personas escribieron en octubre de 2026 y cuántas compraron. Segunda: qué compraron, si fue para barbería, para salón o para spa. Tercera: qué mes, qué día y a qué hora compran más. Y cuarta: desde que activamos Meta CAPI, que es la conexión que le avisa a Facebook qué clientes realmente compran, ¿nos llegan clientes de mejor calidad?
 
 ## 03 · Arquitectura cliente-servidor  (~34 s)
 
@@ -41,17 +41,17 @@ Duración estimada de la voz: **7 min 16 s** (más las pausas del video).
 
 **Leer:** Este es MongoDB Compass conectado a mi computadora. La base se llama bi_leads y tiene dos colecciones: leads, con un documento por cada cliente que escribió, y ventas, con un documento por cada comprobante. Fíjense que un documento guarda todo junto: el origen del anuncio, la etapa, la asesora y si compró. En la pestaña de agregaciones pego un pipeline: primero match para filtrar octubre, luego group para agrupar por día. El resultado sale al instante: el jueves es el día con más compras.
 
-## 06 · El back en Spring Boot  (~34 s)
+## 06 · El back en Spring Boot  (~43 s)
 
-**En pantalla:** VS Code: paquetes de la API, Lead.java con @Document, LeadRepository, Pipelines.java, MetricasService y BiController. Luego mvn test con 11 pruebas en verde y /api/salud en el navegador.
+**En pantalla:** VS Code: paquetes de la API, Lead.java con @Document, LeadRepository, Pipelines.java, MetricasService y BiController. Luego mvn test con 15 pruebas en verde y /api/salud en el navegador.
 
-**Leer:** Ahora el servidor. En model están las clases Lead y Venta, marcadas con arroba Document para que Spring las guarde en MongoDB. En repository usamos Spring Data: con solo escribir el nombre del método, como count by mes and compro true, Spring arma la consulta. Los cálculos pesados están en Pipelines, y son exactamente los mismos pipelines que acabamos de probar en Compass. El controller expone los endpoints con GetMapping. Y antes de publicar, once pruebas automáticas confirman que los números cuadran.
+**Leer:** Ahora el servidor. En model están las clases Lead y Venta, marcadas con arroba Document para que Spring las guarde en MongoDB. En repository usamos Spring Data: con solo escribir el nombre del método, como count by mes, Spring arma la consulta. Los cálculos pesados están en Pipelines, y son exactamente los mismos pipelines que acabamos de probar en Compass. El controller expone los endpoints con GetMapping, y todos reciben los mismos filtros por la URL: Spring los arma en un objeto Filtro, que se convierte en un match de MongoDB. Y antes de publicar, quince pruebas automáticas confirman que los números cuadran.
 
-## 07 · El front  (~26 s)
+## 07 · El front  (~29 s)
 
-**En pantalla:** VS Code con app.js (fetch a la API) y el dashboard en localhost:8081 llamando a localhost:8080.
+**En pantalla:** VS Code con app.js (fetch a la API con los filtros) y el dashboard en localhost:8081 llamando a localhost:8080.
 
-**Leer:** El cliente es independiente del servidor, igual que en el ejemplo del curso: el HTML corre en el puerto 8081 y la API en el 8080. El archivo app.js hace las llamadas con fetch, recibe el JSON y dibuja los gráficos con Chart.js. Para entrar se pide una clave, y la API responde con un token firmado que vence en doce horas.
+**Leer:** El cliente es independiente del servidor, igual que en el ejemplo del curso: el HTML corre en el puerto 8081 y la API en el 8080. El archivo app.js hace las llamadas con fetch, recibe el JSON y dibuja los gráficos con Chart.js. El dashboard es abierto, sin clave, y los filtros que elijas quedan en la dirección, así que se puede compartir exactamente la vista que estás mirando.
 
 ## 08 · GitHub  (~20 s)
 
@@ -89,14 +89,14 @@ Duración estimada de la voz: **7 min 16 s** (más las pausas del video).
 
 **Leer:** Un detalle de seguridad: MongoDB no está abierto a internet. Entonces, ¿cómo lo vemos desde Compass? Con un túnel SSH. En la conexión elijo la opción de SSH, pongo el servidor y mi llave, y Compass entra por ese túnel. Aquí están las mismas colecciones, pero ahora en el servidor de producción.
 
-## 14 · El dashboard y los hallazgos  (~44 s)
+## 14 · El dashboard y los hallazgos  (~58 s)
 
-**En pantalla:** https://bi.dbltech.tech: resumen de octubre, día y hora, rubros, CAPI antes y después, búsqueda de clientes y hallazgos.
+**En pantalla:** https://bi.dbltech.tech: barra de filtros, filtros rápidos, destacados (clic en «Mes con más ventas»), filtro octubre, rubros, CAPI antes y después, clientes y hallazgos.
 
-**Leer:** Y este es el resultado en internet. En octubre escribieron 4 207 personas y el 87 por ciento llegó por anuncios. Compraron 93. El jueves es el día con más ventas, la mejor hora es entre las diez y las once, y el domingo no se vende. Lo que más se vendió fue mobiliario de salón, casi la mitad, seguido de barbería. Y la respuesta sobre CAPI: desde que se activó llegan 29 por ciento menos leads, pero las ventas por cada 100 leads subieron de 2,6 a 3, un 18 por ciento más. Es correlación, no prueba, pero la calidad de los clientes mejoró.
+**Leer:** Y este es el resultado en internet. Arriba está la barra de filtros: puedo combinar meses, rubro, origen, asesora, día y si compró o no. Los destacados son filtros inteligentes: el mes con más ventas fue agosto, y si lo toco, todo el dashboard se filtra a agosto. Si elijo octubre, veo que escribieron 4 207 personas, el 87 por ciento por anuncios, y compraron 93. El jueves es el día con más ventas y el domingo no se vende. Lo que más se vendió fue mobiliario de salón, casi la mitad, seguido de barbería. Y la respuesta sobre CAPI: desde que se activó llegan 29 por ciento menos leads, pero las ventas por cada 100 leads subieron de 2,6 a 3, un 18 por ciento más. Es correlación, no prueba, pero la calidad de los clientes mejoró.
 
 ## 15 · Cierre  (~25 s)
 
 **En pantalla:** Lámina final: conclusiones, enlaces al dashboard y a GitHub.
 
-**Leer:** En resumen: con MongoDB guardamos los datos como documentos, con Spring Boot los convertimos en indicadores, y con un cliente web los mostramos a quien toma decisiones. Un hallazgo extra: quien escribe directo, sin anuncio, compra cuatro veces más que quien llega por Facebook. El siguiente paso es llevar este mismo proyecto a arquitectura hexagonal. Gracias por su atención.
+**Leer:** En resumen: con MongoDB guardamos los datos como documentos, con Spring Boot los convertimos en indicadores, y con un cliente web los mostramos a quien toma decisiones. Un hallazgo extra: en octubre, quien escribe directo, sin anuncio, compró cuatro veces más que quien llegó por Facebook. El siguiente paso es llevar este mismo proyecto a arquitectura hexagonal. Gracias por su atención.

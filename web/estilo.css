@@ -40,19 +40,7 @@ h3 svg { width: 16px; height: 16px; color: var(--verde); }
 [hidden] { display: none !important; }
 button { font: inherit; cursor: pointer; }
 
-/* ---------- Ingreso ---------- */
-.ingreso { min-height: 100vh; display: grid; place-items: center; padding: 24px; background: var(--negro); }
-.ingreso-tarjeta {
-  width: min(380px, 100%); background: var(--blanco); border-radius: 18px; padding: 28px 28px 24px;
-  display: flex; flex-direction: column; gap: 12px; text-align: center;
-}
-.ingreso-icono {
-  width: 64px; height: 64px; margin: 0 auto 4px; border-radius: 16px; background: var(--negro); color: var(--verde-neon);
-  display: grid; place-items: center;
-}
-.ingreso-icono svg { width: 32px; height: 32px; }
-.marca-clara { justify-content: center; color: var(--negro); }
-.ingreso h1 { font-size: 20px; }
+/* ---------- Campos ---------- */
 .campo {
   display: flex; align-items: center; gap: 8px; border: 1px solid var(--borde); border-radius: 10px;
   padding: 0 12px; background: var(--blanco);
@@ -60,13 +48,6 @@ button { font: inherit; cursor: pointer; }
 .campo svg { width: 16px; height: 16px; color: var(--texto-3); flex: none; }
 .campo input { border: 0; outline: 0; font: inherit; font-size: 16px; padding: 11px 0; width: 100%; background: transparent; }
 .campo:focus-within { border-color: var(--verde); box-shadow: 0 0 0 3px var(--verde-50); }
-.boton {
-  display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 0; border-radius: 10px;
-  background: var(--verde); color: var(--negro); font-weight: 700; padding: 12px 16px;
-}
-.boton:hover { background: var(--verde-neon); }
-.boton svg { width: 16px; height: 16px; }
-.error { color: var(--error); font-size: 13px; margin: 0; }
 
 /* ---------- Barra superior ---------- */
 .barra {
@@ -228,6 +209,77 @@ table { border-collapse: collapse; width: 100%; }
 .hallazgo p { margin: 0; font-size: 15px; line-height: 1.45; }
 
 .pie { text-align: center; color: var(--texto-3); font-size: 12px; padding: 18px; }
+
+/* ---------- Barra de filtros múltiples ---------- */
+.filtros-barra {
+  position: sticky; top: 54px; z-index: 4; background: var(--blanco); border-bottom: 1px solid var(--borde);
+  padding: 10px 28px; display: flex; flex-direction: column; gap: 8px;
+}
+.filtros-fila { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; max-width: 1440px; }
+.filtros-titulo { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; margin-right: 4px; }
+.filtros-titulo svg { width: 16px; height: 16px; color: var(--verde); }
+.filtro { position: relative; }
+.filtro-boton {
+  display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--borde); background: var(--blanco);
+  border-radius: 9px; padding: 7px 10px; color: var(--texto);
+}
+.filtro-boton svg { width: 15px; height: 15px; color: var(--texto-2); }
+.filtro-boton:hover { border-color: var(--verde); }
+.filtro.activo .filtro-boton { border-color: var(--verde); background: var(--verde-50); }
+.cuenta:not(:empty) { background: var(--negro); color: var(--verde-neon); font-size: 11px; font-weight: 700; border-radius: 999px; padding: 1px 7px; }
+.filtro-boton.rapido { background: var(--negro); color: var(--blanco); border-color: var(--negro); }
+.filtro-boton.rapido svg { color: var(--verde-neon); }
+.menu {
+  position: absolute; top: calc(100% + 6px); left: 0; z-index: 10; min-width: 240px; max-height: 340px; overflow: auto;
+  background: var(--blanco); border: 1px solid var(--borde); border-radius: 12px; padding: 6px;
+  box-shadow: 0 12px 32px rgba(10, 10, 10, .14);
+}
+.opcion { display: grid; grid-template-columns: 18px 1fr auto; align-items: center; gap: 8px; padding: 7px 8px; border-radius: 8px; cursor: pointer; }
+.opcion:hover { background: var(--verde-50); }
+.opcion input { accent-color: var(--verde); width: 15px; height: 15px; }
+.opcion small { color: var(--texto-3); font-size: 11px; }
+.menu-todos { width: 100%; margin-top: 4px; border: 0; border-top: 1px solid var(--borde); background: none; padding: 8px; color: var(--verde-700); font-weight: 600; }
+.opcion-rapida { display: flex; align-items: center; gap: 8px; width: 100%; border: 0; background: none; padding: 8px 10px; border-radius: 8px; text-align: left; }
+.opcion-rapida:hover { background: var(--verde-50); }
+.opcion-rapida svg { width: 16px; height: 16px; color: var(--verde); }
+.limpiar { display: inline-flex; align-items: center; gap: 5px; border: 0; background: none; color: var(--texto-2); padding: 6px 8px; }
+.limpiar svg { width: 14px; height: 14px; }
+.limpiar:hover { color: var(--negro); }
+.activos { display: flex; gap: 6px; flex-wrap: wrap; max-width: 1440px; }
+.chip-filtro {
+  display: inline-flex; align-items: center; gap: 6px; border: 0; background: var(--negro); color: #d4d4d8;
+  border-radius: 999px; padding: 4px 10px; font-size: 12px;
+}
+.chip-filtro b { color: var(--verde-neon); font-weight: 600; }
+.chip-filtro svg { width: 12px; height: 12px; }
+
+/* ---------- Destacados (filtros inteligentes) ---------- */
+.seccion { font-size: 14px; margin-bottom: 10px; }
+.nota-inline { font-family: "Inter", sans-serif; font-weight: 500; font-size: 12px; color: var(--texto-3); margin-left: 4px; }
+.destacados { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; }
+.destacado {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 4px; text-align: left; padding: 14px;
+  background: var(--blanco); border: 1px solid var(--borde); border-radius: var(--radio); box-shadow: var(--sombra);
+  transition: border-color .15s, transform .15s;
+}
+.destacado:not(.fijo):hover { border-color: var(--verde); transform: translateY(-2px); }
+.destacado.fijo, .destacado:disabled { cursor: default; color: inherit; opacity: 1; }
+.destacado-icono { width: 32px; height: 32px; border-radius: 9px; background: var(--negro); color: var(--verde-neon); display: grid; place-items: center; margin-bottom: 4px; }
+.destacado-icono svg { width: 16px; height: 16px; }
+.destacado-titulo { font-size: 10px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--texto-2); }
+.destacado-valor { font-family: "Plus Jakarta Sans", sans-serif; font-size: 19px; font-weight: 800; text-transform: capitalize; }
+.destacado-detalle { font-size: 12px; color: var(--texto-3); }
+
+/* Filas que filtran al tocarlas */
+.fila-filtro { cursor: pointer; }
+.fila-filtro:hover td { background: var(--verde-50); }
+.fila-filtro.seleccionada td { background: var(--verde-50); box-shadow: inset 3px 0 0 var(--verde); }
+
+@media (max-width: 1100px) { .destacados { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 760px) {
+  .filtros-barra { position: static; padding: 10px 14px; }
+  .destacados { grid-template-columns: 1fr 1fr; }
+}
 
 /* Tooltip propio (embudo y mapa de calor) */
 .tip {

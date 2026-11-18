@@ -22,7 +22,7 @@
   {
    "cwd": "/opt/bi-leads",
    "ver": "cp .env.ejemplo .env && nano .env",
-   "correr": "cp .env.ejemplo .env && sed -i \"s/^MONGO_CLAVE=.*/MONGO_CLAVE=$(openssl rand -hex 16)/; s/^BI_CLAVE=.*/BI_CLAVE={BI_CLAVE}/; s/^BI_SECRETO=.*/BI_SECRETO=$(openssl rand -hex 32)/\" .env && chmod 600 .env"
+   "correr": "cp .env.ejemplo .env && sed -i \"s/^MONGO_CLAVE=.*/MONGO_CLAVE=$(openssl rand -hex 16)/;\" .env && chmod 600 .env"
   },
   {
    "cwd": "/opt/bi-leads",

@@ -2,13 +2,14 @@ package pe.luislopez.bi.dto;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 
 /** Respuestas de la API. Records: inmutables y se convierten solos a JSON. Ninguno lleva montos. */
 public final class Dtos {
     private Dtos() {
     }
 
-    public record Resumen(String mes, long leads, long deAnuncio, double pctAnuncio, long calificados,
+    public record Resumen(String periodo, long leads, long deAnuncio, double pctAnuncio, long calificados,
                           long compraron, double conversion, long ventas, double ventasPor100, long unidades) {
     }
 
@@ -41,7 +42,7 @@ public final class Dtos {
     public record Conteo(String nombre, long leads, long compraron, double conversion) {
     }
 
-    public record Anuncios(List<Conteo> anuncios, List<Conteo> plataformas) {
+    public record Anuncios(List<Conteo> anuncios, List<Conteo> origenes) {
     }
 
     public record Asesora(String asesora, long leads, long calificados, long compraron, double conversion) {
@@ -58,12 +59,18 @@ public final class Dtos {
     public record Hallazgo(String icono, String texto) {
     }
 
+    /** Un dato que sobresale; «filtro» es el filtro que se aplica al hacerle clic (puede ir vacío). */
+    public record Destacado(String clave, String icono, String titulo, String valor, String detalle,
+                            Map<String, Object> filtro) {
+    }
+
+    public record Opcion(String valor, String etiqueta, long cantidad) {
+    }
+
+    public record Opciones(List<Opcion> meses, List<Opcion> rubros, List<Opcion> origenes, List<Opcion> asesoras,
+                           List<Opcion> dias) {
+    }
+
     public record Salud(boolean ok, String mongo, String baseDatos, long leads, long ventas) {
-    }
-
-    public record Ingreso(String clave) {
-    }
-
-    public record Token(String token, long expiraEnSegundos) {
     }
 }

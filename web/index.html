@@ -8,24 +8,7 @@
   <link rel="stylesheet" href="estilo.css">
 </head>
 <body>
-
-<!-- Ingreso con clave -->
-<section id="ingreso" class="ingreso" hidden>
-  <form id="form-ingreso" class="ingreso-tarjeta">
-    <span class="ingreso-icono"><i data-lucide="chart-no-axes-combined"></i></span>
-    <div class="marca marca-clara"><b class="marca-nombre">Luis López</b><span class="chip-bi">BI</span></div>
-    <h1>Leads y ventas</h1>
-    <p class="suave">Inteligencia de negocios · jul–oct 2026</p>
-    <label class="campo">
-      <i data-lucide="lock"></i>
-      <input id="clave" type="password" placeholder="Clave" autocomplete="current-password" required>
-    </label>
-    <button class="boton" type="submit">Entrar <i data-lucide="arrow-right"></i></button>
-    <p id="ingreso-error" class="error" hidden>Clave incorrecta</p>
-  </form>
-</section>
-
-<div id="app" hidden>
+<div id="app">
   <header class="barra">
     <div class="marca">
       <span class="logo-bi"><i data-lucide="chart-no-axes-combined"></i></span>
@@ -39,22 +22,32 @@
       <button data-tab="hallazgos"><i data-lucide="lightbulb"></i>Hallazgos</button>
     </nav>
     <div class="barra-der">
-      <label class="selector" title="Mes">
-        <i data-lucide="calendar"></i>
-        <select id="mes">
-          <option value="2026-07">Julio 2026</option>
-          <option value="2026-08">Agosto 2026</option>
-          <option value="2026-09">Setiembre 2026</option>
-          <option value="2026-10" selected>Octubre 2026</option>
-        </select>
-      </label>
       <span id="chip-mongo" class="chip-mongo" title="Base de datos"><i data-lucide="database"></i><span></span></span>
-      <button id="salir" class="icono-boton" title="Salir"><i data-lucide="log-out"></i></button>
     </div>
   </header>
 
+  <!-- Filtros múltiples: se combinan entre sí y quedan en la URL -->
+  <section class="filtros-barra" aria-label="Filtros">
+    <div class="filtros-fila">
+      <span class="filtros-titulo"><i data-lucide="sliders-horizontal"></i>Filtros</span>
+      <div class="filtro" data-filtro="meses"><button class="filtro-boton"><i data-lucide="calendar"></i>Meses<span class="cuenta"></span><i data-lucide="chevron-down"></i></button><div class="menu" hidden></div></div>
+      <div class="filtro" data-filtro="rubros"><button class="filtro-boton"><i data-lucide="armchair"></i>Rubro<span class="cuenta"></span><i data-lucide="chevron-down"></i></button><div class="menu" hidden></div></div>
+      <div class="filtro" data-filtro="origenes"><button class="filtro-boton"><i data-lucide="megaphone"></i>Origen<span class="cuenta"></span><i data-lucide="chevron-down"></i></button><div class="menu" hidden></div></div>
+      <div class="filtro" data-filtro="asesoras"><button class="filtro-boton"><i data-lucide="headset"></i>Asesora<span class="cuenta"></span><i data-lucide="chevron-down"></i></button><div class="menu" hidden></div></div>
+      <div class="filtro" data-filtro="dias"><button class="filtro-boton"><i data-lucide="calendar-days"></i>Día<span class="cuenta"></span><i data-lucide="chevron-down"></i></button><div class="menu" hidden></div></div>
+      <div class="segmento" id="f-compro" title="¿Compró?">
+        <button data-v="" class="activa">Todos</button>
+        <button data-v="true">Compraron</button>
+        <button data-v="false">No compraron</button>
+      </div>
+      <div class="filtro filtro-rapido" data-filtro="rapidos"><button class="filtro-boton rapido"><i data-lucide="sparkles"></i>Filtros rápidos<i data-lucide="chevron-down"></i></button><div class="menu" hidden></div></div>
+      <button id="limpiar" class="limpiar" hidden><i data-lucide="x"></i>Limpiar</button>
+    </div>
+    <div id="activos" class="activos" hidden></div>
+  </section>
+
   <main>
-    <!-- RESUMEN DEL MES -->
+    <!-- RESUMEN -->
     <section data-panel="mes" class="panel">
       <div class="titulo">
         <span class="titulo-ilus"><i data-lucide="layout-dashboard"></i></span>
@@ -66,42 +59,57 @@
 
       <div id="kpis" class="kpis"></div>
 
+      <div>
+        <h3 class="seccion"><i data-lucide="sparkles"></i>Destacados <span class="nota-inline">Toca uno para filtrar por él</span></h3>
+        <div id="destacados" class="destacados"></div>
+      </div>
+
       <div class="grilla g2">
+        <article class="tarjeta">
+          <h3><i data-lucide="calendar-check"></i>¿Qué mes vende más?</h3>
+          <p class="nota">Comprobantes por mes · toca una barra para filtrar</p>
+          <div class="lienzo"><canvas id="g-meses"></canvas></div>
+        </article>
         <article class="tarjeta">
           <h3><i data-lucide="filter"></i>Del mensaje a la compra</h3>
           <div id="embudo" class="embudo"></div>
-        </article>
-        <article class="tarjeta">
-          <h3><i data-lucide="armchair"></i>¿Qué compraron?</h3>
-          <p class="nota">Unidades vendidas por rubro</p>
-          <div class="lienzo"><canvas id="g-categorias"></canvas></div>
         </article>
       </div>
 
       <div class="grilla g2">
         <article class="tarjeta">
+          <h3><i data-lucide="armchair"></i>¿Qué compraron?</h3>
+          <p class="nota">Unidades vendidas por rubro · toca una barra para filtrar</p>
+          <div class="lienzo"><canvas id="g-categorias"></canvas></div>
+        </article>
+        <article class="tarjeta">
           <h3><i data-lucide="calendar-days"></i>¿Qué día compran?</h3>
-          <p class="nota">Comprobantes por día de la semana</p>
+          <p class="nota">Comprobantes por día de la semana · toca una barra para filtrar</p>
           <div class="lienzo"><canvas id="g-dias"></canvas></div>
         </article>
+      </div>
+
+      <div class="grilla g2">
         <article class="tarjeta">
           <h3><i data-lucide="clock"></i>¿A qué hora compran?</h3>
           <p class="nota">Comprobantes por día y hora · más oscuro = más ventas</p>
           <div id="calor" class="calor"></div>
         </article>
-      </div>
-
-      <div class="grilla g3">
         <article class="tarjeta">
           <h3><i data-lucide="megaphone"></i>¿De dónde llegan?</h3>
+          <p class="nota">Toca una fila para filtrar</p>
           <table class="mini" id="t-origen"></table>
         </article>
+      </div>
+
+      <div class="grilla g2">
         <article class="tarjeta">
           <h3><i data-lucide="badge-check"></i>Anuncios que más venden</h3>
           <table class="mini" id="t-anuncios"></table>
         </article>
         <article class="tarjeta">
           <h3><i data-lucide="headset"></i>Asesoras</h3>
+          <p class="nota">Toca una fila para filtrar</p>
           <table class="mini" id="t-asesoras"></table>
         </article>
       </div>
@@ -113,7 +121,7 @@
         <span class="titulo-ilus"><i data-lucide="trending-up"></i></span>
         <div>
           <h2>Meta CAPI: antes y después</h2>
-          <p class="suave">CAPI le avisa a Meta qué clientes calificaron y compraron · activa desde el 30-ago-2026</p>
+          <p class="suave">CAPI le avisa a Meta qué clientes calificaron y compraron · activa desde el 30-ago-2026 · aquí se comparan siempre los 4 meses</p>
         </div>
       </div>
       <div class="capi-hero">
@@ -140,11 +148,6 @@
     <section data-panel="clientes" class="panel" hidden>
       <div class="filtros">
         <label class="campo buscar"><i data-lucide="search"></i><input id="buscar" type="search" placeholder="Buscar por nombre"></label>
-        <div class="segmento" id="f-compro">
-          <button data-v="" class="activa">Todos</button>
-          <button data-v="true">Compraron</button>
-          <button data-v="false">No compraron</button>
-        </div>
         <span id="total-clientes" class="suave"></span>
       </div>
       <article class="tarjeta sin-relleno">

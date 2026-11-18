@@ -12,6 +12,8 @@
   "cliente": "Ana Torres",
   "canal": "whatsapp",
   "leadId": "L-ejemplo000",
+  "origen": "facebook",
+  "asesora": "Asesora A",
   "categorias": [
    "HERRAMIENTAS"
   ],
@@ -37,6 +39,8 @@
   "cliente": "Diego Paz",
   "canal": "whatsapp",
   "leadId": "L-ejemplo003",
+  "origen": "instagram",
+  "asesora": "Asesora A",
   "categorias": [
    "HERRAMIENTAS"
   ],
@@ -62,6 +66,8 @@
   "cliente": "Gina Vega",
   "canal": "whatsapp",
   "leadId": "L-ejemplo006",
+  "origen": "facebook",
+  "asesora": "Asesora A",
   "categorias": [
    "HERRAMIENTAS"
   ],
@@ -87,6 +93,8 @@
   "cliente": "Jorge Cano",
   "canal": "whatsapp",
   "leadId": "L-ejemplo009",
+  "origen": "facebook",
+  "asesora": "Asesora A",
   "categorias": [
    "BARBERÍA"
   ],
@@ -112,6 +120,8 @@
   "cliente": "Marta Ruiz",
   "canal": "whatsapp",
   "leadId": "L-ejemplo012",
+  "origen": "directo",
+  "asesora": "Asesora A",
   "categorias": [
    "SPA"
   ],
@@ -137,6 +147,8 @@
   "cliente": "Ana Torres",
   "canal": "whatsapp",
   "leadId": "L-ejemplo015",
+  "origen": "facebook",
+  "asesora": "Asesora A",
   "categorias": [
    "BARBERÍA"
   ],
@@ -162,6 +174,8 @@
   "cliente": "Diego Paz",
   "canal": "whatsapp",
   "leadId": "L-ejemplo018",
+  "origen": "directo",
+  "asesora": "Asesora A",
   "categorias": [
    "SALÓN"
   ],
@@ -187,6 +201,8 @@
   "cliente": "Gina Vega",
   "canal": "whatsapp",
   "leadId": "L-ejemplo021",
+  "origen": "instagram",
+  "asesora": "Asesora A",
   "categorias": [
    "HERRAMIENTAS"
   ],
@@ -212,6 +228,8 @@
   "cliente": "Jorge Cano",
   "canal": "whatsapp",
   "leadId": "L-ejemplo024",
+  "origen": "facebook",
+  "asesora": "Asesora A",
   "categorias": [
    "HERRAMIENTAS"
   ],
@@ -237,6 +255,8 @@
   "cliente": "Marta Ruiz",
   "canal": "whatsapp",
   "leadId": "L-ejemplo027",
+  "origen": "facebook",
+  "asesora": "Asesora A",
   "categorias": [
    "SALÓN"
   ],
@@ -262,6 +282,8 @@
   "cliente": "Cliente de tienda",
   "canal": "otro",
   "leadId": null,
+  "origen": "sin chat",
+  "asesora": "Sin asesora",
   "categorias": [
    "BARBERÍA"
   ],
@@ -287,6 +309,8 @@
   "cliente": "Cliente de tienda",
   "canal": "otro",
   "leadId": null,
+  "origen": "sin chat",
+  "asesora": "Sin asesora",
   "categorias": [
    "BARBERÍA"
   ],

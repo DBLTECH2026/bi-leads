@@ -19,9 +19,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
  * Requiere MongoDB corriendo en 127.0.0.1:27017.
  */
 @SpringBootTest(properties = {
-        "spring.mongodb.uri=mongodb://127.0.0.1:27017/bi_leads_test",
-        "bi.clave=clave-de-prueba",
-        "bi.secreto=secreto-de-prueba"})
+        "spring.mongodb.uri=mongodb://127.0.0.1:27017/bi_leads_test"})
 public abstract class BaseMongoTest {
     protected static final String MES = "2026-10";
     protected static List<BsonDocument> leadsEjemplo;

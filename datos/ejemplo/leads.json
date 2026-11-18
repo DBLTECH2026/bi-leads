@@ -11,6 +11,7 @@
   "hora": 14,
   "origen": {
    "tipo": "anuncio",
+   "canal": "facebook",
    "plataforma": "facebook",
    "anuncio": "Mobiliario para tu barbería",
    "clickId": true
@@ -40,6 +41,7 @@
   "hora": 18,
   "origen": {
    "tipo": "anuncio",
+   "canal": "instagram",
    "plataforma": "instagram",
    "anuncio": "Sillones con envío a todo el Perú",
    "clickId": true
@@ -67,6 +69,7 @@
   "hora": 13,
   "origen": {
    "tipo": "directo",
+   "canal": "directo",
    "plataforma": null,
    "anuncio": null,
    "clickId": false
@@ -94,6 +97,7 @@
   "hora": 12,
   "origen": {
    "tipo": "anuncio",
+   "canal": "instagram",
    "plataforma": "instagram",
    "anuncio": "Lavacabezas para salón",
    "clickId": true
@@ -123,6 +127,7 @@
   "hora": 14,
   "origen": {
    "tipo": "anuncio",
+   "canal": "instagram",
    "plataforma": "instagram",
    "anuncio": "Lavacabezas para salón",
    "clickId": true
@@ -150,6 +155,7 @@
   "hora": 13,
   "origen": {
    "tipo": "anuncio",
+   "canal": "instagram",
    "plataforma": "instagram",
    "anuncio": "Lavacabezas para salón",
    "clickId": true
@@ -177,6 +183,7 @@
   "hora": 17,
   "origen": {
    "tipo": "anuncio",
+   "canal": "facebook",
    "plataforma": "facebook",
    "anuncio": "Lavacabezas para salón",
    "clickId": true
@@ -206,6 +213,7 @@
   "hora": 17,
   "origen": {
    "tipo": "anuncio",
+   "canal": "instagram",
    "plataforma": "instagram",
    "anuncio": "Sillones con envío a todo el Perú",
    "clickId": true
@@ -233,6 +241,7 @@
   "hora": 9,
   "origen": {
    "tipo": "anuncio",
+   "canal": "facebook",
    "plataforma": "facebook",
    "anuncio": "Mobiliario para tu barbería",
    "clickId": true
@@ -260,6 +269,7 @@
   "hora": 18,
   "origen": {
    "tipo": "anuncio",
+   "canal": "facebook",
    "plataforma": "facebook",
    "anuncio": "Lavacabezas para salón",
    "clickId": true
@@ -289,6 +299,7 @@
   "hora": 16,
   "origen": {
    "tipo": "anuncio",
+   "canal": "instagram",
    "plataforma": "instagram",
    "anuncio": "Sillones con envío a todo el Perú",
    "clickId": true
@@ -316,6 +327,7 @@
   "hora": 17,
   "origen": {
    "tipo": "anuncio",
+   "canal": "instagram",
    "plataforma": "instagram",
    "anuncio": "Lavacabezas para salón",
    "clickId": true
@@ -343,6 +355,7 @@
   "hora": 18,
   "origen": {
    "tipo": "directo",
+   "canal": "directo",
    "plataforma": null,
    "anuncio": null,
    "clickId": false
@@ -372,6 +385,7 @@
   "hora": 13,
   "origen": {
    "tipo": "anuncio",
+   "canal": "instagram",
    "plataforma": "instagram",
    "anuncio": "Sillones con envío a todo el Perú",
    "clickId": true
@@ -399,6 +413,7 @@
   "hora": 9,
   "origen": {
    "tipo": "directo",
+   "canal": "directo",
    "plataforma": null,
    "anuncio": null,
    "clickId": false
@@ -426,6 +441,7 @@
   "hora": 17,
   "origen": {
    "tipo": "anuncio",
+   "canal": "facebook",
    "plataforma": "facebook",
    "anuncio": "Lavacabezas para salón",
    "clickId": true
@@ -455,6 +471,7 @@
   "hora": 14,
   "origen": {
    "tipo": "anuncio",
+   "canal": "instagram",
    "plataforma": "instagram",
    "anuncio": "Mobiliario para tu barbería",
    "clickId": true
@@ -482,6 +499,7 @@
   "hora": 18,
   "origen": {
    "tipo": "anuncio",
+   "canal": "facebook",
    "plataforma": "facebook",
    "anuncio": "Sillones con envío a todo el Perú",
    "clickId": true
@@ -509,6 +527,7 @@
   "hora": 17,
   "origen": {
    "tipo": "directo",
+   "canal": "directo",
    "plataforma": null,
    "anuncio": null,
    "clickId": false
@@ -538,6 +557,7 @@
   "hora": 18,
   "origen": {
    "tipo": "anuncio",
+   "canal": "instagram",
    "plataforma": "instagram",
    "anuncio": "Sillones con envío a todo el Perú",
    "clickId": true
@@ -565,6 +585,7 @@
   "hora": 18,
   "origen": {
    "tipo": "anuncio",
+   "canal": "instagram",
    "plataforma": "instagram",
    "anuncio": "Mobiliario para tu barbería",
    "clickId": true
@@ -592,6 +613,7 @@
   "hora": 18,
   "origen": {
    "tipo": "anuncio",
+   "canal": "instagram",
    "plataforma": "instagram",
    "anuncio": "Lavacabezas para salón",
    "clickId": true
@@ -621,6 +643,7 @@
   "hora": 9,
   "origen": {
    "tipo": "directo",
+   "canal": "directo",
    "plataforma": null,
    "anuncio": null,
    "clickId": false
@@ -648,6 +671,7 @@
   "hora": 14,
   "origen": {
    "tipo": "directo",
+   "canal": "directo",
    "plataforma": null,
    "anuncio": null,
    "clickId": false
@@ -675,6 +699,7 @@
   "hora": 13,
   "origen": {
    "tipo": "anuncio",
+   "canal": "facebook",
    "plataforma": "facebook",
    "anuncio": "Lavacabezas para salón",
    "clickId": true
@@ -704,6 +729,7 @@
   "hora": 18,
   "origen": {
    "tipo": "anuncio",
+   "canal": "instagram",
    "plataforma": "instagram",
    "anuncio": "Sillones con envío a todo el Perú",
    "clickId": true
@@ -731,6 +757,7 @@
   "hora": 10,
   "origen": {
    "tipo": "anuncio",
+   "canal": "facebook",
    "plataforma": "facebook",
    "anuncio": "Mobiliario para tu barbería",
    "clickId": true
@@ -758,6 +785,7 @@
   "hora": 9,
   "origen": {
    "tipo": "anuncio",
+   "canal": "facebook",
    "plataforma": "facebook",
    "anuncio": "Lavacabezas para salón",
    "clickId": true
@@ -787,6 +815,7 @@
   "hora": 17,
   "origen": {
    "tipo": "directo",
+   "canal": "directo",
    "plataforma": null,
    "anuncio": null,
    "clickId": false
@@ -814,6 +843,7 @@
   "hora": 13,
   "origen": {
    "tipo": "anuncio",
+   "canal": "instagram",
    "plataforma": "instagram",
    "anuncio": "Mobiliario para tu barbería",
    "clickId": true

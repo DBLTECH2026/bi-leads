@@ -2,19 +2,21 @@ package pe.luislopez.bi.service;
 
 import static pe.luislopez.bi.service.MetricasService.n;
 import static pe.luislopez.bi.service.MetricasService.pct;
+import static pe.luislopez.bi.service.MetricasService.por100;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import pe.luislopez.bi.dto.Dtos.Comparativo;
-import pe.luislopez.bi.dto.Dtos.MesCapi;
-import pe.luislopez.bi.dto.Dtos.Periodo;
 import lombok.RequiredArgsConstructor;
 import org.bson.Document;
 import org.springframework.stereotype.Service;
+import pe.luislopez.bi.dto.Dtos.Comparativo;
+import pe.luislopez.bi.dto.Dtos.MesCapi;
+import pe.luislopez.bi.dto.Dtos.Periodo;
+import pe.luislopez.bi.dto.Filtro;
 
-/** Antes vs después de Meta CAPI (activa desde el 30-ago-2026): jul-ago contra sep-oct. */
+/** Mes a mes y antes/después de Meta CAPI (activa desde el 30-ago-2026): jul-ago contra sep-oct. */
 @Service
 @RequiredArgsConstructor
 public class CapiService {
@@ -22,13 +24,15 @@ public class CapiService {
             "Correlación, no causalidad: también cambian la temporada y la inversión en anuncios.";
 
     private final MetricasService metricas;
+    private final Filtros filtros;
 
-    public Comparativo comparativo() {
+    /** Leads, ventas y conversión de cada mes, con los filtros aplicados. */
+    public List<MesCapi> porMes(Filtro f) {
         Map<String, Long> ventasPorMes = new HashMap<>();
-        for (Document d : metricas.agregar("ventas", Pipelines.VENTAS_POR_MES, Map.of())) {
+        for (Document d : metricas.agregar("ventas", Pipelines.VENTAS_POR_MES, filtros.ventas(f))) {
             ventasPorMes.put(d.getString("_id"), n(d, "ventas"));
         }
-        List<MesCapi> meses = metricas.agregar("leads", Pipelines.CAPI_POR_MES, Map.of()).stream()
+        return metricas.agregar("leads", Pipelines.LEADS_POR_MES, filtros.leads(f)).stream()
                 .map(d -> {
                     String mes = d.getString("_id");
                     long leads = n(d, "leads");
@@ -39,6 +43,11 @@ public class CapiService {
                             mediana instanceof Number m ? m.doubleValue() : null, n(d, "leadsCapi"));
                 })
                 .toList();
+    }
+
+    /** Siempre compara los 4 meses: usa los demás filtros (rubro, origen, asesora…) pero no los meses. */
+    public Comparativo comparativo(Filtro f) {
+        List<MesCapi> meses = porMes(f.sinMeses());
         Periodo antes = periodo("antes", meses);
         Periodo despues = periodo("despues", meses);
         double variacion = antes.ventasPor100() == 0 ? 0
@@ -52,10 +61,5 @@ public class CapiService {
         long ventas = del.stream().mapToLong(MesCapi::ventas).sum();
         long calificados = del.stream().mapToLong(MesCapi::calificados).sum();
         return new Periodo(nombre, leads, ventas, por100(ventas, leads), pct(calificados, leads));
-    }
-
-    /** Ventas por cada 100 leads, con 2 decimales. */
-    static double por100(long ventas, long leads) {
-        return leads == 0 ? 0 : Math.round(ventas * 10000.0 / leads) / 100.0;
     }
 }

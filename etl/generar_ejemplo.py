@@ -33,7 +33,7 @@ def generar():
             "nombre": NOMBRES[i % len(NOMBRES)],
             "llegada": llegada.astimezone(timezone.utc),
             **t.campos_fecha(llegada),
-            "origen": {"tipo": "anuncio" if anuncio else "directo",
+            "origen": {"tipo": "anuncio" if anuncio else "directo", "canal": None,
                        "plataforma": r.choice(["facebook", "instagram"]) if anuncio else None,
                        "anuncio": r.choice(ANUNCIOS) if anuncio else None, "clickId": anuncio},
             "capi": {"periodo": t.periodo_capi(llegada), "leadEnviado": compro or r.random() < 0.1},
@@ -53,15 +53,19 @@ def generar():
             ventas.append({
                 "_id": f"V-ejemplo{len(ventas):03d}", "fecha": fecha.astimezone(timezone.utc),
                 **t.campos_fecha(fecha), "tipo": "boleta", "cliente": lead["nombre"], "canal": "whatsapp",
-                "leadId": lead["_id"], "categorias": [cat],
+                "leadId": lead["_id"], "origen": None, "asesora": lead["asesora"], "categorias": [cat],
                 "items": [{"producto": prod, "categoria": cat, "cantidad": 1 + r.randrange(2)}],
                 "capiEnviado": lead["capi"]["periodo"] == "despues"})
+        lead["origen"]["canal"] = lead["origen"]["plataforma"] if anuncio else "directo"
+        for v in ventas:
+            if v["leadId"] == lead["_id"]:
+                v["origen"] = lead["origen"]["canal"]
         leads.append(lead)
     for j in range(2):  # ventas en tienda, sin chat
         fecha = datetime(2026, 10, 10 + j * 7, 11, tzinfo=t.LIMA)  # 10 y 17 de octubre: sábados
         ventas.append({"_id": f"V-ejemplo{len(ventas):03d}", "fecha": fecha.astimezone(timezone.utc),
                        **t.campos_fecha(fecha), "tipo": "factura", "cliente": "Cliente de tienda", "canal": "otro",
-                       "leadId": None, "categorias": ["BARBERÍA"],
+                       "leadId": None, "origen": "sin chat", "asesora": "Sin asesora", "categorias": ["BARBERÍA"],
                        "items": [{"producto": "Sillón barbero clásico", "categoria": "BARBERÍA", "cantidad": 1}],
                        "capiEnviado": False})
     return leads, ventas

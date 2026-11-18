@@ -90,6 +90,7 @@ def construir(chats, espejo, ventas, detalles, categorias, principal, extra):
             **t.campos_fecha(llegada),
             "origen": {
                 "tipo": "anuncio" if c["anuncioId"] else "directo",
+                "canal": ("directo" if not c["anuncioId"] else (c["anuncioApp"] or "otro anuncio")),
                 "plataforma": c["anuncioApp"],
                 "anuncio": t.sin_marca(c["anuncioTitulo"]),
                 "clickId": bool(c["clid"]),
@@ -104,6 +105,7 @@ def construir(chats, espejo, ventas, detalles, categorias, principal, extra):
         })
 
     lead_de_chat = {c["id"]: h("L", c["id"]) for c in chats}
+    info_lead = {l["_id"]: l for l in leads}
     items_por_venta = defaultdict(list)
     for d in detalles:
         cant = (d["cantidad"] or 0) - (d["cantidad_anulada"] or 0)
@@ -119,6 +121,7 @@ def construir(chats, espejo, ventas, detalles, categorias, principal, extra):
         fecha = t.erp_a_lima(v["fecha_venta"])
         items = items_por_venta.get(v["id"], [])
         chat = chat_de_venta.get(v["id"])
+        lead = info_lead.get(lead_de_chat.get(chat))
         docs_ventas.append({
             "_id": h("V", v["id"]),
             "fecha": fecha.astimezone(timezone.utc),
@@ -127,6 +130,9 @@ def construir(chats, espejo, ventas, detalles, categorias, principal, extra):
             "cliente": t.nombre_limpio(v["cliente_nombre"] or v["razon_social"], None),
             "canal": "whatsapp" if chat else "otro",
             "leadId": lead_de_chat.get(chat),
+            # Para filtrar ventas por el origen y la asesora del cliente que compró
+            "origen": lead["origen"]["canal"] if lead else "sin chat",
+            "asesora": lead["asesora"] if lead else "Sin asesora",
             "categorias": sorted({i["categoria"] for i in items}),
             "items": items,
             "capiEnviado": capi_de_venta.get(v["id"], False),
